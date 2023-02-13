@@ -1,0 +1,49 @@
+# backend
+backend/node_modules/
+backend/node_modules/package-lock.json
+nest/node_modules/
+nest/.vscode/
+nest/.angular/
+nest/package-lock.json
+
+# nest
+# Compiled output
+nest/dist
+nest/tmp
+nest/out-tsc
+nest/bazel-out
+
+# Node
+nest/node_modules
+nest/npm-debug.log
+nest/yarn-error.log
+
+# IDEs and editors
+nest/.idea/
+nest/.project
+nest/.classpath
+nest/.c9/
+nest/*.launch
+nest/.settings/
+nest/*.sublime-workspace
+
+# Visual Studio Code
+nest/.vscode/*
+nest/!.vscode/settings.json
+nest/!.vscode/tasks.json
+nest/!.vscode/launch.json
+nest/!.vscode/extensions.json
+nest/.history/*
+
+# Miscellaneous
+nest/.angular/cache
+nest/.sass-cache/
+nest/connect.lock
+nest/coverage
+nest/libpeerconnection.log
+nest/testem.log
+nest/typings
+
+# System files
+nest/.DS_Store
+nest/Thumbs.db
