@@ -1,31 +1,51 @@
 <app-header></app-header>
-<table class="table">
-    <thead class="thead-light">
+<!-- <div class="container-fluid">
+</div> -->
+<router-outlet></router-outlet>
+<footer class="bg-primary text-light py-3 mt-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <p>Thông tin về trang web của bạn</p>
+      </div>
+      <div class="col-md-6 text-md-end">
+        <p>Bản quyền © 2023 - Tên trang web của bạn</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<!-- <div class="container">
+
+  <table class="table mx-auto">
+    <thead>
       <tr>
-        <th scope="col">#</th>
-        <th scope="col">Id</th>
-        <th scope="col">Name</th>
-        <th scope="col">Permissions</th>
+        <th>#</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Username</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let user of users | async">
-        <th scope="row">1</th>
+        <td>1</td>
         <td>{{user.id}}</td>
         <td>{{user.name}}</td>
         <td>{{user.permissions}}</td>
       </tr>
-      <!-- <tr>
-        <th scope="row">2</th>
+      <tr>
+        <td>2</td>
         <td>Jacob</td>
         <td>Thornton</td>
         <td>@fat</td>
       </tr>
       <tr>
-        <th scope="row">3</th>
+        <td>3</td>
         <td>Larry</td>
         <td>the Bird</td>
         <td>@twitter</td>
-      </tr> -->
+      </tr>
     </tbody>
   </table>
+</div> -->
