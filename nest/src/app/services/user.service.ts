@@ -1,14 +1,26 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
+import { User } from '../interfaces/users';
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
   private headers = new HttpHeaders({ 'Content-Type': 'application/json', 'charset': 'UTF-8' })
   private options = { headers: this.headers }
+  private apiUrl = 'http://localhost:3000/users'
   constructor(private http: HttpClient) { }
 
+  //1. sử dụng kiểu any
+  signUp(userData: any): Observable<any>{
+    return this.http.post(`${this.apiUrl}/signup`,userData);
+  }
+
+  //2. sử dụng interface
+  // signUp(userData: User): Observable<User>{
+  //   return this.http.post<User>(`${this.apiUrl}/signup`,userData);
+  // }
+  
   register(user: any): Observable<any> {
     return this.http.post('/api/user', JSON.stringify(user), this.options)
   }

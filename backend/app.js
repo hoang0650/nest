@@ -3,9 +3,44 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-
+// const db = require('./db')
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+
+const cors = require('cors');
+const dotenv = require('dotenv');
+dotenv.config();
+
+//set up mongoose
+const mongoose = require('mongoose');
+
+function mongooseSetup() {
+  mongoose.connect(process.env.MDB_CONNECT,{
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+  })
+
+  mongoose.connection.on('connected', function(){
+    console.info('Connected to MongoDB successful');
+  })
+
+  mongoose.connection.on('error',function(err){
+    console.error('Mongoose default connection has occured ' + err + ' error');
+  })
+
+  mongoose.connection.on('disconnected', function(){
+    console.warn('Database connection is disconnected');
+  })
+
+  process.on('SIGINT', function(){
+    mongoose.connection.close(function(){
+        console.log(termination('Database connection is disconnected due to application termination'));
+        process.exit(0);
+    })
+  })
+}
+
+mongooseSetup();
 
 var app = express();
 
@@ -13,6 +48,7 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
+app.use(cors());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

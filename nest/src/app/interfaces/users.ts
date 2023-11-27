@@ -1,5 +1,6 @@
+// models/user.model.ts
 export interface User {
-    id: number;
-    name: string;
-    permissions: string;
+    username: string;
+    email: string;
+    password: string;
 }
