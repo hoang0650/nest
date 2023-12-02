@@ -24,6 +24,7 @@ const UserSchema = new Schema({
     role: {
         type: String, default: 'user'
     },
+    created_at: { type: Date, default: Date.now},
     history: Array,
     tmpHistory: {
         hId: String,

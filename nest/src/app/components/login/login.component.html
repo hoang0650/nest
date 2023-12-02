@@ -4,14 +4,14 @@
       <div class="card">
         <div class="card-body">
           <h5 class="card-title text-center mb-4">Đăng nhập tài khoản</h5>
-          <form>
+          <form (ngSubmit)="login()">
             <div class="form-floating mb-3">
-              <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
-              <label for="floatingInput">Email</label>
+              <input type="email" class="form-control" id="email" placeholder="name@example.com" [(ngModel)]="email" name="email" required>
+              <label for="email">Email</label>
             </div>
             <div class="form-floating mb-3">
-              <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
-              <label for="floatingPassword">Mật khẩu</label>
+              <input type="password" class="form-control" id="password" placeholder="Password" [(ngModel)]="password" name="password" required>
+              <label for="password">Mật khẩu</label>
               <a href="#" class="link-primary float-end">Quên mật khẩu?</a>
             </div>
             <button type="submit" class="btn btn-lg btn-primary mt-3 w-100">Đăng nhập</button>

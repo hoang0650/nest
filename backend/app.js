@@ -6,7 +6,7 @@ var logger = require('morgan');
 // const db = require('./db')
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-
+const jwt =require('jsonwebtoken')
 const cors = require('cors');
 const dotenv = require('dotenv');
 dotenv.config();
@@ -41,6 +41,17 @@ function mongooseSetup() {
 }
 
 mongooseSetup();
+
+//Middleware để xác thực token
+function authentication(req,res,next){
+  const token = req.header('Authorization')
+  if(!token) return res.status(401).json({message:'Authorization'})
+  jwt.verify(token, process.JWT_SECRET, (err,user)=>{
+    if(err) return res.status(403).json({message:'Forbidden'})
+    req.user = user
+    next();
+  })
+}
 
 var app = express();
 
