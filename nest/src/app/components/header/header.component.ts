@@ -6,20 +6,31 @@ import { UserService } from 'src/app/services/user.service';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
-
-  isLoggedIn = false;
+  isLoggedIn: boolean = false
+  infor: any;
 
   constructor(private userService: UserService) {
-    this.userService.isLoggedIn.subscribe((status)=>{
-      this.isLoggedIn = status
-    })
+    
   }
 
   ngOnInit(): void {
+    this.userService.isLoggedIn.subscribe((status)=>{
+      console.log('status',status);
+      this.isLoggedIn = status
+      this.userInfor()
+    })
   }
 
   logOut(){
+    localStorage.removeItem('access_token')
     this.userService.logout()
+  }
+
+  userInfor(){
+    return this.userService.getUserInfor().subscribe(data=>{
+      this.infor=data
+      console.log('infor',this.infor);     
+    });
   }
 
 }

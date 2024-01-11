@@ -46,7 +46,7 @@ mongooseSetup();
 function authentication(req,res,next){
   const token = req.header('Authorization')
   if(!token) return res.status(401).json({message:'Authorization'})
-  jwt.verify(token, process.JWT_SECRET, (err,user)=>{
+  jwt.verify(token, process.env.JWT_SECRET, (err,user)=>{
     if(err) return res.status(403).json({message:'Forbidden'})
     req.user = user
     next();

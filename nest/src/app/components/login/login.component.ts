@@ -16,7 +16,7 @@ export class LoginComponent implements OnInit {
   login(){
     const user = {email: this.email,password: this.password}
     this.userService.login(user).subscribe(response=>{
-      // localStorage.setItem('token',response.token);
+      localStorage.setItem('access_token',response.token);
       this.router.navigate(['home'])
 
     },error=>{

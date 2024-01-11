@@ -13,8 +13,15 @@ export class UserService {
   constructor(private http: HttpClient) { }
 
   get isLoggedIn(): Observable<boolean>{
+    const token = localStorage.getItem('access_token')
     return this.loggedIn.asObservable();
   }
+
+  // checkLoggedInStatus(): boolean {
+  //   const token = localStorage.getItem('access_token');
+  //   return !!token; 
+  //   Trả về true nếu có token, ngược lại là false
+  // }
 
   //1. sử dụng kiểu any
   // signUp(userData: any): Observable<any>{
@@ -35,6 +42,15 @@ export class UserService {
   //   return this.http.post('/api/login', JSON.stringify(credentials), this.options)
   // }
 
+//   login(emailAndPassword:any){
+//     return this.userService.login(emailAndPassword).subscribe(res=>{
+//       localStorage.setItem('access_token',res.token);
+//       const decodedUser = this.decodedUserFromToken(res.token);
+//       this.setCurrentUser(decodedUser);
+//       return this.loggedIn;
+//     })
+//  }
+
   login(userData:any): Observable<any>{
     this.loggedIn.next(true)
     return this.http.post<User>(`${this.apiUrl}/login`,userData);
@@ -45,8 +61,14 @@ export class UserService {
   }
   
 
-  getUsers(): Observable<any> {
-    return this.http.get('/api/users').pipe(map((res: any) => { return res.JSON() }))
+  // getUsers(): Observable<any> {
+  //   return this.http.get('/api/users').pipe(map((res: any) => { return res.JSON() }))
+  // }
+
+  getUserInfor(): Observable <any>{
+    const token = localStorage.getItem('access_token')
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`)
+    return this.http.get<any>(`${this.apiUrl}/info`, { headers });
   }
 
   countUsers(): Observable<any>{

@@ -9,6 +9,6 @@ router.get('/', function (req, res, next) {
 // router.get('/',findOneByUserId);
 router.post('/signup', createUser);
 router.post('/login', login);
-// router.get('/info', getUserInfo);
+router.get('/info', getUserInfo);
 
 module.exports = router;

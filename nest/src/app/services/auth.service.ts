@@ -9,9 +9,9 @@ export class AuthService {
   loggedIn = false;
   isAdmin = false;
   jwtHelper: JwtHelper = new JwtHelper();
-  currentUser = { _id: '', username: '', role: '' }
+  currentUser = { userId: '', username: '', role: '' }
   constructor(private userService: UserService, private route:Router) {
-    const token:any = localStorage.getItem('token');
+    const token:any = localStorage.getItem('access_token');
     if(token){
       // const decodedUser = this.d
     }
@@ -19,7 +19,7 @@ export class AuthService {
 
    login(emailAndPassword:any){
       return this.userService.login(emailAndPassword).subscribe(res=>{
-        localStorage.setItem('token',res.token);
+        localStorage.setItem('access_token',res.token);
         const decodedUser = this.decodedUserFromToken(res.token);
         this.setCurrentUser(decodedUser);
         return this.loggedIn;
@@ -27,10 +27,10 @@ export class AuthService {
    }
 
    logout(){
-    localStorage.removeItem('token');
+    localStorage.removeItem('access_token');
     this.loggedIn = false;
     this.isAdmin = false;
-    this.currentUser = {_id:'', username:'', role:''};
+    this.currentUser = {userId:'', username:'', role:''};
     this.route.navigate(['/'])
    }
 
@@ -40,7 +40,7 @@ export class AuthService {
 
    setCurrentUser(decodedUser:any){
     this.loggedIn = true;
-    this.currentUser._id = decodedUser._id;
+    this.currentUser.userId = decodedUser.userId;
     this.currentUser.username = decodedUser.username;
     this.currentUser.role = decodedUser.role;
     decodedUser.role === 'admin' ? this.isAdmin = true: this.isAdmin = false;
