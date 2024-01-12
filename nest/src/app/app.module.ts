@@ -6,16 +6,15 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './components/header/header.component';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-// import firebase
-import { AngularFireModule } from '@angular/fire/compat'
-import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
-import { environment } from '../environments/environment';
-import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { ProductListComponent } from './components/product-list/product-list.component';
 import { LoginComponent } from './components/login/login.component';
 import { HomeComponent } from './components/home/home.component';
 import { SignupComponent } from './components/signup/signup.component';
 import { ProductDetailComponent } from './components/product-detail/product-detail.component';
+import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { AdminComponent } from './components/admin/admin.component';
+import { RoomHistoryComponent } from './components/room-history/room-history.component';
+import { RoomComponent } from './components/room/room.component';
 
 @NgModule({
   declarations: [
@@ -25,14 +24,15 @@ import { ProductDetailComponent } from './components/product-detail/product-deta
     LoginComponent,
     HomeComponent,
     SignupComponent,
-    ProductDetailComponent
+    ProductDetailComponent,
+    SidebarComponent,
+    AdminComponent,
+    RoomHistoryComponent,
+    RoomComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    AngularFireModule.initializeApp(environment.firebase),
-    AngularFirestoreModule,
-    AngularFireAuthModule,
     ReactiveFormsModule,
     FormsModule,
     HttpClientModule

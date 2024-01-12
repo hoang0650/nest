@@ -1,0 +1,19 @@
+<!-- <div *ngIf="roomHistory && roomHistory.length > 0"> -->
+<div *ngIf="roomHistory && roomHistory.length > 0">
+    <h4>Room History</h4>
+    <ul class="list-group">
+        <li class="list-group-item" *ngFor="let historyItem of roomHistory">
+            <!-- {{ historyItem.date | date }}: {{ historyItem.action }} -->
+            {{ historyItem.date | date }}: {{historyItem.action}}
+        </li>
+    </ul>
+</div>
+
+<div *ngIf="!roomHistory">
+    <h4>Room History</h4>
+    <ul class="list-group">
+        <li class="list-group-item">
+            Không có dữ liệu
+        </li>
+    </ul>
+</div>

@@ -10,18 +10,22 @@ export class UserService {
   private options = { headers: this.headers }
   private apiUrl = 'http://localhost:3000/users'
   private loggedIn = new BehaviorSubject<boolean>(false);
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) { 
+    this.checkToken();
+  }
+
+   // Hàm này kiểm tra token và cập nhật trạng thái đăng nhập
+   private checkToken(): void {
+    const token = localStorage.getItem('access_token');
+    const isLoggedIn = !!token; // Kiểm tra xem token có tồn tại không
+
+    this.loggedIn.next(isLoggedIn);
+  }
 
   get isLoggedIn(): Observable<boolean>{
-    const token = localStorage.getItem('access_token')
     return this.loggedIn.asObservable();
   }
 
-  // checkLoggedInStatus(): boolean {
-  //   const token = localStorage.getItem('access_token');
-  //   return !!token; 
-  //   Trả về true nếu có token, ngược lại là false
-  // }
 
   //1. sử dụng kiểu any
   // signUp(userData: any): Observable<any>{

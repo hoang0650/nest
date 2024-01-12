@@ -1,0 +1,22 @@
+.room-box {
+    height: 100px;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+    text-align: center;
+    line-height: 100px;
+}
+
+.active-room {
+    background-color: #28a745;
+    color: #fff;
+}
+
+.inactive-room {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.dirty-room{
+    background-color: grey;
+    color: #fff;
+}

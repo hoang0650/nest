@@ -22,6 +22,12 @@ export class ProductService {
       { id: 1, name: 'Product 1', description: 'Description 1' },
       { id: 2, name: 'Product 2', description: 'Description 2' },
       { id: 3, name: 'Product 3', description: 'Description 3' },
+      { id: 4, name: 'Product 1', description: 'Description 4' },
+      { id: 5, name: 'Product 2', description: 'Description 5' },
+      { id: 6, name: 'Product 3', description: 'Description 6' },
+      { id: 7, name: 'Product 1', description: 'Description 7' },
+      { id: 8, name: 'Product 2', description: 'Description 8' },
+     
     ];
 
     // Cập nhật dữ liệu trong BehaviorSubject
@@ -37,6 +43,10 @@ export class ProductService {
     //     console.error('Error loading products:', error);
     //   }
     // );
+  }
+  
+  updateProducts(newData: any[]): void {
+    this.productsSource.next(newData);
   }
 
   setSelectedProduct(product: any): void {

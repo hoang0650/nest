@@ -10,26 +10,27 @@ export class HeaderComponent implements OnInit {
   infor: any;
 
   constructor(private userService: UserService) {
-    
+    this.userInfor()
   }
 
   ngOnInit(): void {
     this.userService.isLoggedIn.subscribe((status)=>{
       console.log('status',status);
       this.isLoggedIn = status
-      this.userInfor()
+      // this.userInfor()
     })
   }
 
   logOut(){
     localStorage.removeItem('access_token')
     this.userService.logout()
+    this.isLoggedIn = false
+
   }
 
   userInfor(){
     return this.userService.getUserInfor().subscribe(data=>{
       this.infor=data
-      console.log('infor',this.infor);     
     });
   }
 
