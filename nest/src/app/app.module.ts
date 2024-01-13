@@ -15,6 +15,7 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { AdminComponent } from './components/admin/admin.component';
 import { RoomHistoryComponent } from './components/room-history/room-history.component';
 import { RoomComponent } from './components/room/room.component';
+import { ModalComponent } from './components/modal/modal.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { RoomComponent } from './components/room/room.component';
     SidebarComponent,
     AdminComponent,
     RoomHistoryComponent,
-    RoomComponent
+    RoomComponent,
+    ModalComponent
   ],
   imports: [
     BrowserModule,

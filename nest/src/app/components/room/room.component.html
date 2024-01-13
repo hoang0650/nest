@@ -3,20 +3,11 @@
 
         <div class="room-box" [ngClass]="isActive ? 'active-room' : 'inactive-room'">
             Room {{ room?.id }}
-            <button (click)="toggleHistory()">Toggle History</button>
+            <!-- <button (click)="toggleHistory()">Toggle History</button> -->
         </div>
 
     </div>
-    <div *ngIf="showHistory">
-        <!-- Upper Section (Room Status) -->
-        <div class="room-status">
-            <!-- Display room status content here -->
-            <!-- For example, you can add room status information -->
-            <p>Room Status: {{ isActive ? 'Active' : 'Inactive' }}</p>
-            <!-- Add more room status information as needed -->
-        </div>
-
-        <!-- Lower Section (Room History) -->
+    <div>
         <app-room-history></app-room-history>
     </div>
 </div>
