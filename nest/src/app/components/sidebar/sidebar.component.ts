@@ -17,4 +17,10 @@ export class SidebarComponent implements OnInit {
     this.isSidebarOpen = !this.isSidebarOpen;
   }
 
+  isCollapsed = false;
+
+  toggleCollapsed(): void {
+    this.isCollapsed = !this.isCollapsed;
+  }
+
 }

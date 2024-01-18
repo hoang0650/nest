@@ -53,3 +53,11 @@
 .sidebar {
     transition: margin-left 0.3s;
 }
+
+.wrapper {
+    width: 240px;
+  }
+
+  button {
+    margin-bottom: 12px;
+  }

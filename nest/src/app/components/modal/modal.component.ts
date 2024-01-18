@@ -1,23 +1,26 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { Component } from '@angular/core';
 
+
+declare var $: any;
 @Component({
   selector: 'app-modal',
   templateUrl: './modal.component.html',
   styleUrls: ['./modal.component.css']
 })
-export class ModalComponent implements OnInit {
+export class ModalComponent {
 
-  @Input() roomNumber!: number;
+  constructor() {}
 
-  constructor(  public activeModal: NgbActiveModal
-    ) { }
-
-  ngOnInit(): void {
+  open(){
+    $('#exampleModal').modal('show')
   }
 
-  closeModal(): void {
-    this.activeModal.close();
+  close(){
+    $('#exampleModal').modal('hide')
   }
+
+  
+  
+
 
 }
