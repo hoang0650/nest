@@ -5,7 +5,7 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root'
 })
 export class ApiService {
-  private baseUrl = 'YOUR_BASE_API_URL';
+  private baseUrl = 'http://localhost:3000/';
 
   constructor(private http: HttpClient) { }
 

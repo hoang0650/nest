@@ -1,37 +1,33 @@
 import { Component, OnInit } from '@angular/core';
 import { ProductService } from 'src/app/services/product.service';
+import { Subscription } from 'rxjs';
 import { NzMarks } from 'ng-zorro-antd/slider';
+import { ModalService } from 'src/app/services/modal.service';
+import { ModalControlDirective } from 'src/app/directives/modal-control.directive';
 @Component({
   selector: 'app-room',
   templateUrl: './room.component.html',
   styleUrls: ['./room.component.css']
 })
 export class RoomComponent implements OnInit {
+  // private productsSubscription: Subscription;
 
-  roomNumber: number = 101; // Replace with actual room number
+  roomNumber!: number // Replace with actual room number
   isActive: boolean = true; // Replace with actual logic
-  showHistory: boolean = false;
   history: any[] = [
     { date: new Date(), action: 'Checked in' },
     // Add more history items as needed
   ];
-  roomHistory: any[] = [];
+  rooms: any[] = [];
 
-  constructor(public productService: ProductService) { }
-
-  ngOnInit(): void {
+  constructor(public productService: ProductService) {
+    // this.productsSubscription = this.productService.products$.subscribe((products) => {
+    //   this.rooms = products.map((product, index) => ({ id: index + 1, name: `Room ${index + 1}` }));
+    // });
   }
 
-  toggleHistory(): void {
-    this.showHistory = !this.showHistory;
 
-    if (this.showHistory) {
-      // Fetch data from ProductService and set it in RoomHistoryComponent
-      const historyData = this.productService.products$;
-      // You can update this logic based on your actual data retrieval mechanism
-      // this.productService.updateProducts([...<any>historyData, { date: new Date(), action: 'Viewed history' }]);
-      this.roomHistory=[...<any>historyData, { date: new Date(), action: 'Viewed history' }];
-    }
+  ngOnInit(): void {
   }
 
   //antd
@@ -65,8 +61,16 @@ export class RoomComponent implements OnInit {
     12: '12'
   };
   reGenerateArray(count: number): void {
-    this.array = new Array(count);
+    this.rooms = Array.from({ length: count }, (_, index) => ({ id: index + 1, name: `Room ${index + 1}` }));
   }
+
+  switchValue = false;
+
+  onSelect(product: number): void {
+    // this.productService.setSelectedProduct(product)
+    const selectedProduct = this.productService.getProductById(product)
+  }
+
 }
 
 

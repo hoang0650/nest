@@ -49,7 +49,9 @@
         <nz-breadcrumb-item>Bill</nz-breadcrumb-item>
       </nz-breadcrumb>
       <nz-content>
-        <div class="inner-content"><app-room></app-room></div>
+        <div class="inner-content">
+          <app-room (showModal)="toggleModal(showModal)"></app-room>
+        </div>
       </nz-content>
       <nz-footer>Ant Design ©2020 Implement By Angular</nz-footer>
     </nz-layout>

@@ -1,36 +1,44 @@
-.room-box {
-    height: 100px;
-    border: 1px solid #ddd;
-    margin-bottom: 20px;
-    text-align: center;
-    line-height: 100px;
-}
-
 .active-room {
     background-color: #28a745;
-    color: #fff;
 }
 
 .inactive-room {
     background-color: #dc3545;
-    color: #fff;
 }
 
-.dirty-room{
+.dirty-room {
     background-color: grey;
-    color: #fff;
 }
 
 .slider {
     width: 50%;
-  }
+}
+
 .slider-container {
     margin-bottom: 16px;
-  }
+}
+
 .grid-config {
     height: 120px;
     font-size: 14px;
     line-height: 120px;
     background: #0092ff;
     border-radius: 4px;
-  }
+}
+
+.gutter-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.occupied {
+    border: 1px solid red;
+    /* or any style for occupied rooms */
+}
+
+.available {
+    border: 1px solid green;
+    /* or any style for available rooms */
+}

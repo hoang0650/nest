@@ -1,23 +1,25 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Component } from '@angular/core';
 // import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { ModalComponent } from '../components/modal/modal.component';
+
+declare var $: any;
 @Injectable({
   providedIn: 'root'
 })
+
+// @Component({
+//   templateUrl: '../components/modal/modal.component.html',
+//   styleUrls: ['../components/modal/modal.component.css']
+// })
 export class ModalService {
-  // private modalRef: NgbModalRef | null = null;
 
   constructor() { }
 
-  openCheckInModal(roomNumber: number): void {
-    // this.modalRef = this.modalService.open(ModalComponent);
-    // this.modalRef.componentInstance.roomNumber = roomNumber;
+
+  open(){
+    $('#exampleModal').modal('show')
   }
 
-  // closeCheckInModal(): void {
-  //   if (this.modalRef) {
-  //     this.modalRef.close();
-  //     this.modalRef = null;
-  //   }
-  // }
+  close(){
+    $('#exampleModal').modal('hide')
+  }
 }

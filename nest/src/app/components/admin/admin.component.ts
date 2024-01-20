@@ -13,5 +13,10 @@ export class AdminComponent implements OnInit {
   }
 
   isCollapsed = false;
+  showModal: boolean = false;
+
+  toggleModal(show: boolean): void {
+    this.showModal = show;
+  }
 
 }
