@@ -40,15 +40,23 @@ export class ProductService {
     
     // Cách 2: Lấy data từ api
     // Gọi API để lấy dữ liệu sản phẩm
-     this.http.get<any[]>('http://localhost:3000/rooms').subscribe(
-      data => {
-    // Cập nhật dữ liệu trong BehaviorSubject
-        this.productsSource.next(data);
+    //  this.http.get<any[]>('http://localhost:3000/rooms').subscribe(
+    //   data => {
+    //     this.productsSource.next(data);
+    //   },
+    //   error => {
+    //     console.error('Error loading products:', error);
+    //   }
+    // );
+    this.roomService.getRooms().subscribe(
+      data =>{
+        this.productsSource.next(data)
       },
-      error => {
-        console.error('Error loading products:', error);
+      error =>{
+        console.error('Error loading products:', error)
       }
-    );
+      
+    )
     
   }
   

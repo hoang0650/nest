@@ -44,7 +44,7 @@
                     </nz-card-meta>
                 </nz-card> -->
                 
-                <div appModalControl (click)="onSelect(room.roomNumber)">
+                <div appModalControl [roomNumber]="room.roomNumber" (roomSelected)="onSelect($event)">
                     <nz-card [nzBordered]="false" [ngStyle]="{'background-color': '#0092ff'}">
                         <div nz-title>{{ room?.roomNumber }}</div>
                         <div nz-body>

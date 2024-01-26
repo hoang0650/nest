@@ -9,14 +9,21 @@ export class RoomsService {
 
   constructor(private http: HttpClient) { }
 
-  getRooms(): Observable<any[]> {
+  getRooms(){
     return this.http.get<any[]>(this.apiUrl);
   }
 
-  checkIn(roomNumber: number): Observable<any> {
-    const url = `${this.apiUrl}/checkin`;
-    return this.http.post<any>(url, { roomNumber });
+  checkInRoom(roomNumber: number): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/checkin/${roomNumber}`, {});
   }
+
+  checkOutRoom(id: string): Observable<any> {
+    return this.http.post<any[]>(`/api/checkout/${id}`, {});
+  }
+
+  // blockUser(id: string, action:string, payload: Object){
+  //   return this.http.post(`${this.Root_url}/${id}/${action}`,payload={'blocked':true});
+  // }
 
   checkOut(roomNumber: number): Observable<any> {
     const url = `${this.apiUrl}/checkout`;

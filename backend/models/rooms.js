@@ -37,10 +37,8 @@ const roomSchema = new mongoose.Schema({
                 enum: ['checkin', 'checkout', 'notpay'],
                 required: true,
             },
-            timestamp: {
-                type: Date,
-                default: Date.now,
-            },
+            checkinTime: { type: Date },
+            checkoutTime: { type: Date },
             payment: {
                 type: Number,
                 default: 0,

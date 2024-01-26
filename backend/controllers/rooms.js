@@ -11,33 +11,73 @@ async function getallRooms(req, res) {
 
 }
 
+const eventHistory = function (action, actor) {
+  return {
+      action: action,
+      actor: actor,
+      timeChange: new Date()
+  };
+};
+
 
 //check in
-async function checkinRoom(req,res) {
+function checkinRoom(req, res) {
+  
+  try {
+    const roomNumber = req.params.id;
+    console.log('roomNumber',roomNumber);
+    if (!roomNumber) {
+      return res.status(404).json({ error: 'Room not found' });
+    }
+    // const room = await Room.find({roomNumber:roomNumber}).then(
+    //   (data)=>{
+    //     data.events={
+    //       type: 'checkin',
+    //       checkinTime: new Date(),
+    //       roomStatus: 'active'
+    //     }
+    //     data.save();
+    //     res.json(data);
+    //   }
+    // ).catch(err=>console.log(err));
+    Room.findOne({roomNumber:roomNumber}).
+    then((room)=>{
+      console.log(113);
+      if(!room.events || room.events == null){
+        room.events.push({
+          type: 'checkin',
+          checkinTime: new Date(),
+          roomStatus: 'active'
+        })
+      }
+    })
 
-  const room = await Room.findOneAndUpdate({ roomNumber: req.params.roomNumber },room.events.push({type: 'checkin', payment, roomStatus: 'active'}));
-
-  // Calculate payment based on the duration or any other logic
-  const payment = calculatePayment(room);
-  res.status(200)
-  // Check-in
-  // room.events.push({ type: 'checkin', payment, roomStatus: 'active' });
-
-  // await room.save();
+    console.log(3);
+  } catch (error) {
+    console.error('Error during check-in:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 }
+
 
 //check out
 async function checkoutRoom() {
-  const room = await Room.findOne({ roomNumber: 101 });
-
-  // Calculate additional payment or perform any necessary logic
-  const additionalPayment = calculatePayment(room);
-
-  // Check-out
-  room.events.push({ type: 'checkout', payment: additionalPayment, roomStatus: 'dirty' });
-
-  await room.save();
+  const roomId = req.params.id;
+  try {
+    const room = await Room.findById(roomId);
+    const additionPayment = calculatePayment(room)
+    room.events.type = 'checkout';
+    room.events.checkoutTime = new Date();
+    room.events.payment = additionPayment
+    room.events.roomStatus = 'dirty';
+    await room.save();
+    res.json(room);
+  } catch (error) {
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 }
+
+
 
 function calculatePayment(room) {
   const checkinEvent = room.events.find(event => event.type === 'checkin');
@@ -62,6 +102,7 @@ function calculatePayment(room) {
 
   return payment;
 }
+
 
 
 module.exports = {

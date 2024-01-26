@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import { NzMarks } from 'ng-zorro-antd/slider';
 import { ModalService } from 'src/app/services/modal.service';
 import { ModalControlDirective } from 'src/app/directives/modal-control.directive';
+import { RoomsService } from 'src/app/services/rooms.service';
 @Component({
   selector: 'app-room',
   templateUrl: './room.component.html',
@@ -19,8 +20,9 @@ export class RoomComponent implements OnInit {
     // Add more history items as needed
   ];
   rooms: any[] = [];
+  selectedRoomId: number | null = null;
 
-  constructor(public productService: ProductService) {
+  constructor(public productService: ProductService, private roomService: RoomsService) {
     // this.productsSubscription = this.productService.products$.subscribe((products) => {
     //   this.rooms = products.map((product, index) => ({ id: index + 1, name: `Room ${index + 1}` }));
     // });
@@ -66,10 +68,18 @@ export class RoomComponent implements OnInit {
 
   switchValue = false;
 
-  onSelect(product: number): void {
+  onSelect(roomId: number): void {
     // this.productService.setSelectedProduct(product)
-    const selectedProduct = this.productService.getProductById(product)
+    this.selectedRoomId = roomId;
   }
+
+  onCheckIn(): void {
+    if (this.selectedRoomId) {
+      // Thực hiện check-in cho phòng đã chọn
+      console.log('Check-in for room:', this.selectedRoomId);
+    }
+  }
+
 
 }
 
