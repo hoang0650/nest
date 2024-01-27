@@ -24,35 +24,22 @@ const eventHistory = function (action, actor) {
 function checkinRoom(req, res) {
   
   try {
-    const roomNumber = req.params.id;
-    console.log('roomNumber',roomNumber);
-    if (!roomNumber) {
+    const id = req.params.id;
+    console.log('roomNumber',id);
+    if (!id) {
       return res.status(404).json({ error: 'Room not found' });
     }
-    // const room = await Room.find({roomNumber:roomNumber}).then(
-    //   (data)=>{
-    //     data.events={
-    //       type: 'checkin',
-    //       checkinTime: new Date(),
-    //       roomStatus: 'active'
-    //     }
-    //     data.save();
-    //     res.json(data);
-    //   }
-    // ).catch(err=>console.log(err));
-    Room.findOne({roomNumber:roomNumber}).
+ 
+    Room.findByIdAndUpdate(id).
     then((room)=>{
-      console.log(113);
-      if(!room.events || room.events == null){
         room.events.push({
-          type: 'checkin',
+          type:'checkin',
           checkinTime: new Date(),
-          roomStatus: 'active'
+          roomStatus:'active'
         })
-      }
+        room.save()
+        res.status(200).json(room)
     })
-
-    console.log(3);
   } catch (error) {
     console.error('Error during check-in:', error);
     res.status(500).json({ error: 'Internal Server Error' });
@@ -61,18 +48,28 @@ function checkinRoom(req, res) {
 
 
 //check out
-async function checkoutRoom() {
-  const roomId = req.params.id;
+function checkoutRoom(req,res) {
   try {
-    const room = await Room.findById(roomId);
-    const additionPayment = calculatePayment(room)
-    room.events.type = 'checkout';
-    room.events.checkoutTime = new Date();
-    room.events.payment = additionPayment
-    room.events.roomStatus = 'dirty';
-    await room.save();
-    res.json(room);
+    const id = req.params.id;
+    console.log('roomNumber',id);
+    if (!id) {
+      return res.status(404).json({ error: 'Room not found' });
+    }
+    
+    Room.findByIdAndUpdate(id).
+    then((room)=>{
+        const additionPayment = calculatePayment(room)
+        room.events.push({
+          type:'checkout',
+          checkoutTime: new Date(),
+          payment: additionPayment,
+          roomStatus:'dirty'
+        })
+        room.save()
+        res.status(200).json(room)
+    })
   } catch (error) {
+    console.error('Error during check-in:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 }
@@ -82,7 +79,10 @@ async function checkoutRoom() {
 function calculatePayment(room) {
   const checkinEvent = room.events.find(event => event.type === 'checkin');
   const checkoutEvent = room.events.find(event => event.type === 'checkout') || { timestamp: new Date() };
-
+  if (!checkinEvent || !checkoutEvent) {
+    // Handle the case where either checkin or checkout event is missing
+    return 0;
+  }
   const checkinTime = checkinEvent.timestamp;
   const checkoutTime = checkoutEvent.timestamp;
 

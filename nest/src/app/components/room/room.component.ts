@@ -20,7 +20,7 @@ export class RoomComponent implements OnInit {
     // Add more history items as needed
   ];
   rooms: any[] = [];
-  selectedRoomId: number | null = null;
+  selectedRoomId: string | null = null;
 
   constructor(public productService: ProductService, private roomService: RoomsService) {
     // this.productsSubscription = this.productService.products$.subscribe((products) => {
@@ -68,17 +68,16 @@ export class RoomComponent implements OnInit {
 
   switchValue = false;
 
-  onSelect(roomId: number): void {
+  onSelect(roomId: any): void {
     // this.productService.setSelectedProduct(product)
     this.selectedRoomId = roomId;
   }
 
-  onCheckIn(): void {
-    if (this.selectedRoomId) {
-      // Thực hiện check-in cho phòng đã chọn
-      console.log('Check-in for room:', this.selectedRoomId);
-    }
-  }
+  // onCheckIn(): void {
+  //   if (this.selectedRoomId) {
+  //     console.log('Check-in for room:', this.selectedRoomId);
+  //   }
+  // }
 
 
 }

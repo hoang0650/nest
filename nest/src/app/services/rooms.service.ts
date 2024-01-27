@@ -13,12 +13,12 @@ export class RoomsService {
     return this.http.get<any[]>(this.apiUrl);
   }
 
-  checkInRoom(roomNumber: number): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/checkin/${roomNumber}`, {});
+  checkInRoom(id: string, payload: object): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/checkin/${id}`, payload);
   }
 
-  checkOutRoom(id: string): Observable<any> {
-    return this.http.post<any[]>(`/api/checkout/${id}`, {});
+  checkOutRoom(id: string, payload: object): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/checkout/${id}`, payload);
   }
 
   // blockUser(id: string, action:string, payload: Object){
