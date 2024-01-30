@@ -9,6 +9,12 @@ const roomSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    roomStatus: {
+        type: String,
+        enum: ['active', 'available', 'dirty'],
+        default: 'available',
+        required: true,
+    },
     hourlyRate: {
         type: Number,
         required: true,
@@ -42,11 +48,6 @@ const roomSchema = new mongoose.Schema({
             payment: {
                 type: Number,
                 default: 0,
-            },
-            roomStatus: {
-                type: String,
-                enum: ['active', 'available', 'dirty'],
-                required: true,
             },
         },
     ],

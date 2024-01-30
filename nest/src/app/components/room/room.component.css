@@ -1,13 +1,13 @@
 .active-room {
-    background-color: #28a745;
+    background: orange !important;
 }
 
 .inactive-room {
-    background-color: #dc3545;
+    background: #28a745 !important;
 }
 
 .dirty-room {
-    background-color: grey;
+    background: grey !important;
 }
 
 .slider {
@@ -18,13 +18,17 @@
     margin-bottom: 16px;
 }
 
-.grid-config {
+.ant-card{
+    background: none !important;
+}
+
+.grid-config{
     height: 120px;
     font-size: 14px;
     line-height: 120px;
-    background: #0092ff;
     border-radius: 4px;
 }
+
 
 .gutter-row {
     display: flex;

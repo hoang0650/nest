@@ -11,14 +11,6 @@ async function getallRooms(req, res) {
 
 }
 
-const eventHistory = function (action, actor) {
-  return {
-      action: action,
-      actor: actor,
-      timeChange: new Date()
-  };
-};
-
 
 //check in
 function checkinRoom(req, res) {
@@ -35,8 +27,8 @@ function checkinRoom(req, res) {
         room.events.push({
           type:'checkin',
           checkinTime: new Date(),
-          roomStatus:'active'
         })
+        room.roomStatus ='active';
         room.save()
         res.status(200).json(room)
     })
@@ -48,56 +40,58 @@ function checkinRoom(req, res) {
 
 
 //check out
-function checkoutRoom(req,res) {
+async function checkoutRoom(req, res) {
+  const roomId = req.params.id;
+  
   try {
-    const id = req.params.id;
-    console.log('roomNumber',id);
-    if (!id) {
-      return res.status(404).json({ error: 'Room not found' });
-    }
+    const room = await Room.findById(roomId);
+
+    // Find the last check-in event
+    const lastCheckinEvent = room.events.reverse().find(event => event.type === 'checkin');
     
-    Room.findByIdAndUpdate(id).
-    then((room)=>{
-        const additionPayment = calculatePayment(room)
-        room.events.push({
-          type:'checkout',
-          checkoutTime: new Date(),
-          payment: additionPayment,
-          roomStatus:'dirty'
-        })
-        room.save()
-        res.status(200).json(room)
-    })
+    if (lastCheckinEvent) {
+      lastCheckinEvent.type = 'checkout';
+      lastCheckinEvent.checkoutTime = new Date();
+      // Calculate and update the payment
+      const payment = calculatePayment(lastCheckinEvent.checkinTime, lastCheckinEvent.checkoutTime);
+      lastCheckinEvent.payment = payment;
+      room.roomStatus = 'dirty';
+
+      await room.save();
+      
+      res.json(room);
+    } else {
+      res.status(400).json({ error: 'No active check-in event found for the specified room.' });
+    }
   } catch (error) {
-    console.error('Error during check-in:', error);
+    console.error('Error checking out room:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 }
 
 
 
-function calculatePayment(room) {
-  const checkinEvent = room.events.find(event => event.type === 'checkin');
-  const checkoutEvent = room.events.find(event => event.type === 'checkout') || { timestamp: new Date() };
-  if (!checkinEvent || !checkoutEvent) {
-    // Handle the case where either checkin or checkout event is missing
-    return 0;
-  }
-  const checkinTime = checkinEvent.timestamp;
-  const checkoutTime = checkoutEvent.timestamp;
-
-  const durationInHours = Math.ceil((checkoutTime - checkinTime) / (1000 * 60 * 60)); // Convert milliseconds to hours
+function calculatePayment(checkinTime, checkoutTime) {
+  const durationInHours = Math.ceil((checkoutTime - checkinTime) / (1000 * 60 * 60));
 
   let payment = 0;
 
+  payment += hourlyRate
+
   if (durationInHours <= 1) {
-    payment = room.hourlyRate;
-  } else if (durationInHours <= 24) {
-    payment = room.dailyRate;
+    payment = hourlyRate;
+  } else if (durationInHours > 1 && durationInHours <= 8) {
+    payment += (durationInHours - 1) * 10000;
+  } else if (durationInHours > 8) {
+    // Nếu durationInHours > 8, cộng thêm 10$ cho mỗi giờ tiếp theo sau 8 giờ
+    payment += (8 - 1) * 10000;
+  } else if (durationInHours<=12){
+    payment = nightlyRate
+  } else if (durationInHours <= 24){
+    payment = dailyRate
   } else {
-    // For longer durations, calculate based on nightly rate
     const nights = Math.ceil(durationInHours / 24);
-    payment = room.nightlyRate * nights;
+    payment = nightlyRate * nights;
   }
 
   return payment;

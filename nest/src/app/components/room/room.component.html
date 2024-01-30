@@ -37,22 +37,16 @@
 <div class="gutter-example">
     <div nz-row [nzGutter]="[hGutter, vGutter]" >
         <!-- <app-modal [isVisible]="modalControl"></app-modal> -->
-        <div nz-col class="gutter-row" [nzSpan]="24 / count" *ngFor="let room of productService.products$ | async">
-            <div class="grid-config" [ngClass]="isActive ? 'dirty-room' : 'inactive-room'">
-                <!-- <nz-card [nzBordered]="true" (click)="openModal()" [ngStyle]="{'background-color': '#0092ff'}" >
-                    <nz-card-meta nzTitle="{{ room?.roomNumber }}" nzDescription="{{room?.description}}">
-                    </nz-card-meta>
-                </nz-card> -->
-                
-                <div appModalControl [roomNumber]="room._id" (roomSelected)="onSelect(room._id)">
-                    <nz-card [nzBordered]="false" [ngStyle]="{'background-color': '#0092ff'}">
+        <div nz-col class="gutter-row" [nzSpan]="24 / count" *ngFor="let room of productService.products$ | async">            
+                <div class="grid-config " appModalControl [room]="room" [ngClass]="getRoomStatusClass(room.roomStatus)">
+                    <nz-card [nzBordered]="false">
                         <div nz-title>{{ room?.roomNumber }}</div>
                         <div nz-body>
                           <p>{{ room?.description }}</p>
                         </div>
                     </nz-card>
                 </div>
-            </div>
+       
         </div>
     </div>
 </div>

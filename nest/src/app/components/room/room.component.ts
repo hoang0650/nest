@@ -11,21 +11,11 @@ import { RoomsService } from 'src/app/services/rooms.service';
   styleUrls: ['./room.component.css']
 })
 export class RoomComponent implements OnInit {
-  // private productsSubscription: Subscription;
-
   roomNumber!: number // Replace with actual room number
-  isActive: boolean = true; // Replace with actual logic
-  history: any[] = [
-    { date: new Date(), action: 'Checked in' },
-    // Add more history items as needed
-  ];
   rooms: any[] = [];
   selectedRoomId: string | null = null;
 
-  constructor(public productService: ProductService, private roomService: RoomsService) {
-    // this.productsSubscription = this.productService.products$.subscribe((products) => {
-    //   this.rooms = products.map((product, index) => ({ id: index + 1, name: `Room ${index + 1}` }));
-    // });
+  constructor(public productService: ProductService) {
   }
 
 
@@ -66,18 +56,25 @@ export class RoomComponent implements OnInit {
     this.rooms = Array.from({ length: count }, (_, index) => ({ id: index + 1, name: `Room ${index + 1}` }));
   }
 
+  getRoomStatusClass(roomStatus: any): string {
+    switch (roomStatus) {
+      case 'available':
+        return 'inactive-room';
+      case 'active':
+        return 'active-room';
+      case 'dirty':
+        return 'dirty-room';
+      default:
+        return 'inactive-room'; // Handle any other cases or return a default class
+    }
+  }
+
   switchValue = false;
 
   onSelect(roomId: any): void {
-    // this.productService.setSelectedProduct(product)
     this.selectedRoomId = roomId;
   }
 
-  // onCheckIn(): void {
-  //   if (this.selectedRoomId) {
-  //     console.log('Check-in for room:', this.selectedRoomId);
-  //   }
-  // }
 
 
 }
