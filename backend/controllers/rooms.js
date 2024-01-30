@@ -53,7 +53,7 @@ async function checkoutRoom(req, res) {
       lastCheckinEvent.type = 'checkout';
       lastCheckinEvent.checkoutTime = new Date();
       // Calculate and update the payment
-      const payment = calculatePayment(lastCheckinEvent.checkinTime, lastCheckinEvent.checkoutTime);
+      const payment = calculatePayment(lastCheckinEvent.checkinTime, lastCheckinEvent.checkoutTime,room);
       lastCheckinEvent.payment = payment;
       room.roomStatus = 'dirty';
 
@@ -71,30 +71,35 @@ async function checkoutRoom(req, res) {
 
 
 
-function calculatePayment(checkinTime, checkoutTime) {
-  const durationInHours = Math.ceil((checkoutTime - checkinTime) / (1000 * 60 * 60));
+function calculatePayment(checkinTime, checkoutTime, data) {
+  if(checkinTime && checkoutTime){
 
-  let payment = 0;
-
-  payment += hourlyRate
-
-  if (durationInHours <= 1) {
-    payment = hourlyRate;
-  } else if (durationInHours > 1 && durationInHours <= 8) {
-    payment += (durationInHours - 1) * 10000;
-  } else if (durationInHours > 8) {
-    // Nếu durationInHours > 8, cộng thêm 10$ cho mỗi giờ tiếp theo sau 8 giờ
-    payment += (8 - 1) * 10000;
-  } else if (durationInHours<=12){
-    payment = nightlyRate
-  } else if (durationInHours <= 24){
-    payment = dailyRate
-  } else {
-    const nights = Math.ceil(durationInHours / 24);
-    payment = nightlyRate * nights;
+    const durationInHours = Math.ceil((checkoutTime - checkinTime) / (1000 * 60 * 60));
+  
+    let payment = 0;
+  
+    payment += data.hourlyRate
+  
+    if (durationInHours <= 1) {
+      payment = data.hourlyRate;
+    } else if (durationInHours > 1 && durationInHours <= 8) {
+      payment += (durationInHours - 1) * 10000;
+    } else if (durationInHours > 8) {
+      // Nếu durationInHours > 8, cộng thêm 10$ cho mỗi giờ tiếp theo sau 8 giờ
+      payment += (8 - 1) * 10000;
+    } else if (durationInHours<=12){
+      payment = data.nightlyRate
+    } else if (durationInHours <= 24){
+      payment = data.dailyRate
+    } else {
+      const nights = Math.ceil(durationInHours / 24);
+      payment = data.nightlyRate * nights;
+    }
+  
+    return payment;
+  } else{
+    return 0;
   }
-
-  return payment;
 }
 
 

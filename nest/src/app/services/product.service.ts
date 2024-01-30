@@ -59,6 +59,10 @@ export class ProductService {
     )
     
   }
+
+  loadUpdatedData() {
+    this.loadProducts();
+  }
   
   // updateProducts(newData: any[]): void {
   //   this.productsSource.next(newData);

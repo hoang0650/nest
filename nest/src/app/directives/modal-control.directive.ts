@@ -3,7 +3,7 @@ import { NzModalService, NzModalRef } from 'ng-zorro-antd/modal';
 import { RoomsService } from '../services/rooms.service';
 import { ProductService } from '../services/product.service';
 import { take, takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import { Subject} from 'rxjs';
 
 @Directive({
   selector: '[appModalControl]',
@@ -11,7 +11,7 @@ import { Subject } from 'rxjs';
 })
 export class ModalControlDirective implements OnInit, OnDestroy {
   @Input() room: any; // Assuming you pass the entire room object to the directive
-  @Output() roomSelected = new EventEmitter<any>();
+  // @Output() roomSelected = new EventEmitter<any>();
   newRoom: any
 
   private destroy$ = new Subject<void>();
@@ -35,30 +35,57 @@ export class ModalControlDirective implements OnInit, OnDestroy {
 
   @HostListener('click') onClick() {
     if (this.room) {
-      console.log('room1', this.room);
       this.newRoom = this.room
-      console.log('new', this.newRoom);
-
-      this.roomSelected.emit(this.room._id);
-
       this.showModal();
     }
   }
 
   showModal(): void {
     this.modalRef = this.modalService.create({
-      nzTitle: 'Check-In',
+      nzTitle: this.handleTitle(),
       nzContent: 'Check in our room',
       nzFooter: [
         {
-          label: 'OK',
+          label: this.handleLabel(),
           type: 'primary',
           onClick: () => this.handleCheck(),
         },
+        {
+          label: 'Hủy',
+          type: 'dashed',
+          onClick: ()=> this.modalRef?.close(),
+        }
       ],
       // Add more modal options as needed
     });
   }
+
+  handleTitle(): string{
+    switch (this.room.roomStatus) {
+      case 'available':
+        return 'Nhận Phòng';
+      case 'active':
+        return 'Trả Phòng';
+      case 'dirty':
+        return 'Dọn Dẹp';
+      default:
+        return 'Nhận Phòng'; // Handle any other cases or return a default class
+    }
+  }
+
+  handleLabel(): string{
+    switch (this.room.roomStatus) {
+      case 'available':
+        return 'Nhận Phòng';
+      case 'active':
+        return 'Trả Phòng';
+      case 'dirty':
+        return 'Dọn Dẹp';
+      default:
+        return 'Nhận Phòng'; // Handle any other cases or return a default class
+    }
+  }
+
 
   handleCheck(): void {
     if (!this.room || !this.room._id) {
@@ -86,6 +113,7 @@ export class ModalControlDirective implements OnInit, OnDestroy {
       .subscribe(
         (room) => {
           console.log('Check-in/out successful. Room:', room);
+          this.roomsService.notifyRoomDataUpdated();
           this.modalRef?.close();
         },
         (error) => {
@@ -101,13 +129,19 @@ export class ModalControlDirective implements OnInit, OnDestroy {
   
       this.newRoom = {
         roomStatus: 'dirty',
-        events: [...this.room.events],
-      };
+        events: [...this.room.events,
+        {
+          type: lastEvent.type,
+          checkoutTime: lastEvent.checkoutTime,
+          payment: lastEvent.payment,
+        },
+      ]};
       this.roomsService.checkOutRoom(this.room._id, this.newRoom)
       .pipe(take(1))
       .subscribe(
         (room) => {
           console.log('Check-in/out successful. Room:', room);
+          this.roomsService.notifyRoomDataUpdated();
           this.modalRef?.close();
         },
         (error) => {

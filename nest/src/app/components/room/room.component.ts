@@ -5,6 +5,7 @@ import { NzMarks } from 'ng-zorro-antd/slider';
 import { ModalService } from 'src/app/services/modal.service';
 import { ModalControlDirective } from 'src/app/directives/modal-control.directive';
 import { RoomsService } from 'src/app/services/rooms.service';
+
 @Component({
   selector: 'app-room',
   templateUrl: './room.component.html',
@@ -14,12 +15,21 @@ export class RoomComponent implements OnInit {
   roomNumber!: number // Replace with actual room number
   rooms: any[] = [];
   selectedRoomId: string | null = null;
+  private roomDataUpdatedSubscription: Subscription;
 
-  constructor(public productService: ProductService) {
+  constructor(public productService: ProductService, private roomsService:RoomsService) {
+    this.roomDataUpdatedSubscription = this.roomsService.getRoomDataUpdated$().subscribe(() => {
+      // Call method to reload or update data
+      this.loadData();
+    });
   }
 
 
   ngOnInit(): void {
+  }
+
+  ngOnDestroy(): void {
+    this.roomDataUpdatedSubscription.unsubscribe();
   }
 
   //antd
@@ -73,6 +83,12 @@ export class RoomComponent implements OnInit {
 
   onSelect(roomId: any): void {
     this.selectedRoomId = roomId;
+  }
+
+  private loadData() {
+    // Update or reload your data here
+    // For example, you can call productService method to fetch updated data
+    this.productService.loadUpdatedData();
   }
 
 
