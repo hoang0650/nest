@@ -8,9 +8,6 @@ import { ProductService } from 'src/app/services/product.service';
   styleUrls: ['./room-history.component.css']
 })
 export class RoomHistoryComponent implements OnInit {
-
-  roomHistory: any [] = [];
-
   
 
   constructor(private productService:ProductService,
@@ -18,9 +15,6 @@ export class RoomHistoryComponent implements OnInit {
     ) { }
 
   ngOnInit(): void {
-    this.productService.products$.subscribe((data)=>{
-      this.roomHistory = data;
-    })
   }
 
  

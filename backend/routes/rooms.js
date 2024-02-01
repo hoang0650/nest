@@ -1,9 +1,10 @@
 var express = require('express');
 var router = express.Router();
-const { getallRooms, checkinRoom, checkoutRoom } = require('../controllers/rooms');
+const { getallRooms, checkinRoom, checkoutRoom,cleanRoom } = require('../controllers/rooms');
 /* GET users listing. */
 router.post('/checkin/:id', checkinRoom);
 router.post('/checkout/:id', checkoutRoom);
+router.post('/clean/:id',cleanRoom);
 router.get('/', getallRooms);
 
 // router.get('/',findOneByUserId);

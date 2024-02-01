@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BehaviorSubject } from 'rxjs';
+import * as XLSX from 'xlsx';
 @Injectable({
   providedIn: 'root'
 })
@@ -32,12 +33,18 @@ export class RoomsService {
     return this.http.post<any>(`${this.apiUrl}/checkout/${id}`, payload);
   }
 
+  cleanRoom(id: string, payload: object): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/clean/${id}`, payload);
+  }
   // blockUser(id: string, action:string, payload: Object){
   //   return this.http.post(`${this.Root_url}/${id}/${action}`,payload={'blocked':true});
   // }
 
-  checkOut(roomNumber: number): Observable<any> {
-    const url = `${this.apiUrl}/checkout`;
-    return this.http.post<any>(url, { roomNumber });
+  exportToExcel(data: any[], fileName: string, sheetName: string): void {
+    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data);
+    const workbook: XLSX.WorkBook = { Sheets: { [sheetName]: worksheet }, SheetNames: [sheetName] };
+    XLSX.writeFile(workbook, `${fileName}.xlsx`);
   }
+
+
 }

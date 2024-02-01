@@ -6,6 +6,8 @@ import { SignupComponent } from './components/signup/signup.component';
 import { ProductDetailComponent } from './components/product-detail/product-detail.component';
 import { AdminComponent } from './components/admin/admin.component';
 import { ModalComponent } from './components/modal/modal.component';
+import { UnauthorizedComponent } from './components/unauthorized/unauthorized.component';
+import { NotfoundComponent } from './components/notfound/notfound.component';
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: 'home', component: HomeComponent},
@@ -13,7 +15,9 @@ const routes: Routes = [
   { path: 'signup', component: SignupComponent},
   { path: 'product/:id', component: ProductDetailComponent},
   { path: 'admin', component: AdminComponent},
-  { path: 'modal', component: ModalComponent}
+  { path: 'modal', component: ModalComponent},
+  { path: 'unauthorized', component: UnauthorizedComponent},
+  { path: 'notfound', component: NotfoundComponent}
   // { path: 'room-history', component: RoomHistoryComponent}
 ];
 

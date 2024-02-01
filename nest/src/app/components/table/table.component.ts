@@ -1,19 +1,27 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgModule } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder } from '@angular/forms';
-
+import { EventType } from '@angular/router';
 import { NzTableLayout, NzTablePaginationPosition, NzTablePaginationType, NzTableSize } from 'ng-zorro-antd/table';
+import { ProductService } from 'src/app/services/product.service';
+import { RoomsService } from 'src/app/services/rooms.service';
+interface EventData {
+  type: string;
+  checkinTime: Date;
+  checkoutTime: Date;
+  payment: number
+}
 
 interface ItemData {
-  name: string;
-  age: number | string;
-  address: string;
+  roomNumber: number | string;
+  description: string;
   checked: boolean;
   expand: boolean;
-  description: string;
   disabled?: boolean;
+  events: EventData[]; // Thêm thuộc tính events
 }
 
 interface Setting {
+  totalPayment: boolean;
   bordered: boolean;
   loading: boolean;
   pagination: boolean;
@@ -41,8 +49,12 @@ type TableScroll = 'unset' | 'scroll' | 'fixed';
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.css']
 })
+
+
+
 export class TableComponent implements OnInit {
   switchValue = false;
+  exported?: boolean;
   settingForm: FormGroup<{ [K in keyof Setting]: FormControl<Setting[K]> }>;
   listOfData: readonly ItemData[] = [];
   displayData: readonly ItemData[] = [];
@@ -52,6 +64,7 @@ export class TableComponent implements OnInit {
   scrollX: string | null = null;
   scrollY: string | null = null;
   settingValue: Setting;
+  totalPayment = 0;
   listOfSwitch = [
     { name: 'Bordered', formControlName: 'bordered' },
     { name: 'Loading', formControlName: 'loading' },
@@ -136,22 +149,7 @@ export class TableComponent implements OnInit {
     this.refreshStatus();
   }
 
-  generateData(): readonly ItemData[] {
-    const data = [];
-    for (let i = 1; i <= 100; i++) {
-      data.push({
-        name: 'John Brown',
-        age: `${i}2`,
-        address: `New York No. ${i} Lake Park`,
-        description: `My name is John Brown, I am ${i}2 years old, living in New York No. ${i} Lake Park.`,
-        checked: false,
-        expand: false
-      });
-    }
-    return data;
-  }
-
-  constructor(private formBuilder: NonNullableFormBuilder) {
+  constructor(private formBuilder: NonNullableFormBuilder, private productService: ProductService, private roomService:RoomsService) {
     this.settingForm = this.formBuilder.group({
       bordered: [false],
       loading: [false],
@@ -166,6 +164,7 @@ export class TableComponent implements OnInit {
       noResult: [false],
       ellipsis: [false],
       simple: [false],
+      totalPayment: [true],
       size: 'small' as NzTableSize,
       paginationType: 'default' as NzTablePaginationType,
       tableScroll: 'unset' as TableScroll,
@@ -174,27 +173,72 @@ export class TableComponent implements OnInit {
     });
     this.settingValue = this.settingForm.value as Setting;
   }
-
   ngOnInit(): void {
     this.settingForm.valueChanges.subscribe(value => {
       this.settingValue = value as Setting;
     });
+
     this.settingForm.controls.tableScroll.valueChanges.subscribe(scroll => {
       this.fixedColumn = scroll === 'fixed';
       this.scrollX = scroll === 'scroll' || scroll === 'fixed' ? '100vw' : null;
     });
+
     this.settingForm.controls.fixHeader.valueChanges.subscribe(fixed => {
       this.scrollY = fixed ? '240px' : null;
     });
+
     this.settingForm.controls.noResult.valueChanges.subscribe(empty => {
       if (empty) {
         this.listOfData = [];
       } else {
-        this.listOfData = this.generateData();
+        this.updateListOfData();
       }
     });
-    this.listOfData = this.generateData();
+
+    // Initial update
+    this.updateListOfData();
   }
+
+  private updateListOfData(): void {
+    this.productService.products$.subscribe(products => {
+      this.listOfData = products.flatMap(product => 
+        product.events.map((event: EventData) => ({
+          roomNumber: product.roomNumber,
+          description: product.description,
+          checked: false,
+          expand: false,
+          events: [{
+            type: event.type,
+            payment: event.payment,
+            checkinTime: event.checkinTime,
+            checkoutTime: event.checkoutTime
+          }]
+        }))
+      );
+
+      this.calculateTotalPayment();
+    });
+  }
+
+  
+
+  private calculateTotalPayment(): void {
+    this.totalPayment = this.listOfData.reduce((sum, room) => {
+      const roomPayment = room.events.reduce((eventSum, event) => eventSum + (event.payment || 0), 0);
+      return sum + roomPayment;
+    }, 0);
+  }
+
+  exportToExcel(): void {
+    const mutableListOfData = [...this.listOfData];
+  // Tiếp tục sử dụng mutableListOfData trong hàm xuất Excel
+    this.roomService.exportToExcel(mutableListOfData, 'Danh sách thanh toán phòng', 'sheetName');
+  }
+
+  // exportXLS(){
+  //   this.exported = true;
+  //   this.cameraService.exportExcel(this.cameras,'ttgt-cameras');
+  // }
 }
 
 

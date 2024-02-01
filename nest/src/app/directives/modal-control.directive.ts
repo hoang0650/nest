@@ -1,9 +1,11 @@
 import { Directive, HostListener, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { NzModalService, NzModalRef } from 'ng-zorro-antd/modal';
 import { RoomsService } from '../services/rooms.service';
-import { ProductService } from '../services/product.service';
 import { take, takeUntil } from 'rxjs/operators';
 import { Subject} from 'rxjs';
+import * as moment from 'moment-timezone';
+import { RoomContentModalComponent } from '../components/room-content-modal/room-content-modal.component';
+
 
 @Directive({
   selector: '[appModalControl]',
@@ -43,7 +45,7 @@ export class ModalControlDirective implements OnInit, OnDestroy {
   showModal(): void {
     this.modalRef = this.modalService.create({
       nzTitle: this.handleTitle(),
-      nzContent: 'Check in our room',
+      nzContent: RoomContentModalComponent,
       nzFooter: [
         {
           label: this.handleLabel(),
@@ -97,6 +99,7 @@ export class ModalControlDirective implements OnInit, OnDestroy {
     const lastEvent = this.room.events[this.room.events.length - 1];
   
     if (this.room.roomStatus === 'available') {
+      
       // Room is available, perform check-in
       this.newRoom = {
         roomStatus: 'active',
@@ -104,7 +107,7 @@ export class ModalControlDirective implements OnInit, OnDestroy {
           ...this.room.events,
           {
             type: 'checkin',
-            checkinTime: new Date(),
+            checkinTime: moment.utc(new Date()).utcOffset(16),
           },
         ],
       };
@@ -122,9 +125,9 @@ export class ModalControlDirective implements OnInit, OnDestroy {
         }
       );
     } else if (this.room.roomStatus === 'active' && lastEvent.type === 'checkin') {
-      // Room is active and last event is check-in, perform check-out
+      // Room is active and last event is check-in, perform check-out    
       lastEvent.type = 'checkout';
-      lastEvent.checkoutTime = new Date();
+      lastEvent.checkoutTime = moment.utc(new Date()).utcOffset(16)
       lastEvent.payment = this.calculatePayment(lastEvent.checkinTime, lastEvent.checkoutTime);
   
       this.newRoom = {
@@ -149,6 +152,23 @@ export class ModalControlDirective implements OnInit, OnDestroy {
           this.modalRef?.close();
         }
       );
+    } else if(this.room.roomStatus === 'dirty' && lastEvent.type === 'checkout'){
+      this.newRoom = {
+        roomStatus: 'available',
+      };
+      this.roomsService.cleanRoom(this.room._id, this.newRoom)
+      .pipe(take(1))
+      .subscribe(
+        (room) => {
+          console.log('Clean successful. Room:', room);
+          this.roomsService.notifyRoomDataUpdated();
+          this.modalRef?.close();
+        },
+        (error) => {
+          console.error('Error during check-in/out:', error);
+          this.modalRef?.close();
+        }
+      );
     } else {
       // Handle other cases as needed
       console.warn('Invalid room status or room not in a check-in state for check-in/check-out.');
@@ -157,12 +177,13 @@ export class ModalControlDirective implements OnInit, OnDestroy {
     }
   }
 
-  calculatePayment(checkinTime: any, checkoutTime: Date): number {
+  calculatePayment(checkinTime: any, checkoutTime: any): number {
     if (checkinTime && checkoutTime) {
       // Chuyển đổi chuỗi ngày thành đối tượng Date
       const checkinDate = new Date(checkinTime);
-  
-      const durationInHours = Math.ceil((checkoutTime.getTime() - checkinDate.getTime()) / (1000 * 60 * 60));
+      const checkoutDate = new Date(checkoutTime);
+      
+      const durationInHours = Math.ceil((checkoutDate.getTime() - checkinDate.getTime()) / (1000 * 60 * 60));
   
       let payment = 0;
   

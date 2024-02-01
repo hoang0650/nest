@@ -41,6 +41,10 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzModalModule } from 'ng-zorro-antd/modal';
+import { SortByCheckinTimePipe } from './pipes/sort-by-checkin-time.pipe';
+import { UnauthorizedComponent } from './components/unauthorized/unauthorized.component';
+import { NotfoundComponent } from './components/notfound/notfound.component';
+import { RoomContentModalComponent } from './components/room-content-modal/room-content-modal.component';
 
 registerLocaleData(en);
 
@@ -59,7 +63,11 @@ registerLocaleData(en);
     RoomComponent,
     ModalComponent,
     TableComponent,
-    ModalControlDirective
+    ModalControlDirective,
+    SortByCheckinTimePipe,
+    UnauthorizedComponent,
+    NotfoundComponent,
+    RoomContentModalComponent
   ],
   imports: [
     BrowserModule,
