@@ -8,7 +8,7 @@ import { User } from '../interfaces/users';
 export class UserService {
   private headers = new HttpHeaders({ 'Content-Type': 'application/json', 'charset': 'UTF-8' })
   private options = { headers: this.headers }
-  private apiUrl = 'http://localhost:3000/users'
+  private apiUrl = 'https://hotel-app-smp2.onrender.com/users'
   private loggedIn = new BehaviorSubject<boolean>(false);
   constructor(private http: HttpClient) { 
     this.checkToken();

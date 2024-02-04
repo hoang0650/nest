@@ -8,7 +8,7 @@ import * as XLSX from 'xlsx';
 })
 export class RoomsService {
   private roomDataUpdated$ = new BehaviorSubject<any>(null);
-  private apiUrl = 'http://localhost:3000/rooms';
+  private apiUrl = 'https://hotel-app-smp2.onrender.com/rooms';
 
   constructor(private http: HttpClient) { }
 

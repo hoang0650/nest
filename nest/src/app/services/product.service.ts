@@ -80,7 +80,7 @@ export class ProductService {
       updatedProducts[index] = { ...updatedProduct };
       this.productsSource.next(updatedProducts);
       // Update the product in the API
-      return this.http.put<any>('http://localhost:3000/rooms/checkin' + updatedProduct.roomNumber, updatedProduct)
+      return this.http.put<any>('https://hotel-app-smp2.onrender.com/checkin' + updatedProduct.roomNumber, updatedProduct)
       .pipe(
         catchError(error => {
           console.error('Error updating room:', error);
