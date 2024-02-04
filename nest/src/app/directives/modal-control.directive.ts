@@ -46,6 +46,9 @@ export class ModalControlDirective implements OnInit, OnDestroy {
     this.modalRef = this.modalService.create({
       nzTitle: this.handleTitle(),
       nzContent: RoomContentModalComponent,
+      nzComponentParams:{
+        roomData: this.room
+      },
       nzFooter: [
         {
           label: this.handleLabel(),

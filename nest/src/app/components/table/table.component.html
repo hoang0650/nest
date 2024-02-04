@@ -62,31 +62,21 @@
   </thead>
   <tbody>
     <ng-container *ngFor="let room of listOfData">
-      <!-- <li><a class="dropdown-item" (click)="exportXLS()"><i class="file excel outline icon"></i> Excel</a></li> -->
-      
-      <tr *ngIf="!settingValue.expandable || room.events.length <= 1">
-        <td [nzLeft]="fixedColumn" *ngIf="settingValue.expandable" [(nzExpand)]="room.expand"></td>
+      <tr *ngIf="!settingValue.expandable && !room.expand" >
+        <td [nzLeft]="fixedColumn" *ngIf="settingValue.expandable" [(nzExpand)]="room.expand">
+        </td>
         <td
           [nzLeft]="fixedColumn"
           *ngIf="settingValue.checkbox"
           [(nzChecked)]="room.checked"
           (nzCheckedChange)="refreshStatus()"
         ></td>
-        <td>{{ room.roomNumber }}</td>
+        <td>{{room['roomNumber']}}</td>
         <td [nzLeft]="fixedColumn">
-          <ng-container *ngFor="let event of room.events | sortByCheckinTime">
-            {{ event.type }}<br />
-          </ng-container>
+            {{room['type']}}
         </td>
         <td [nzEllipsis]="settingValue.ellipsis">
-          <ng-container *ngIf="room.events.length === 1; else multiplePayments">
-            {{ room.events[0].payment }}
-          </ng-container>
-          <ng-template #multiplePayments>
-            <div *ngFor="let event of room.events">
-              {{ event.payment }} ({{ event.checkinTime | date: 'dd/MM/yyyy HH:mm:ss' }} - {{ event.checkoutTime | date: 'dd/MM/yyyy HH:mm:ss' }})
-            </div>
-          </ng-template>
+          {{ room['payment'] }}
         </td>
         <td [nzRight]="fixedColumn" [nzEllipsis]="settingValue.ellipsis">
           <a href="#">Delete</a>
@@ -94,26 +84,17 @@
           <a href="#">More action</a>
         </td>
       </tr>
-      <tr *ngIf="settingValue.expandable && room.events.length > 1" [nzExpand]="room.expand">
-        <ng-container *ngFor="let event of room.events | sortByCheckinTime">
+      <tr *ngIf="settingValue.expandable && listOfData.length > 1" [nzExpand]="room.expand">
           <span
-            *ngIf="event.checkinTime && event.checkoutTime"
-            >Nhận phòng lúc: {{ event.checkinTime | date: 'dd/MM/yyyy HH:mm:ss' }} - Trả phòng lúc: {{
-            event.checkoutTime | date: 'dd/MM/yyyy HH:mm:ss'
+            *ngIf="room.checkinTime && room.checkoutTime"
+            >Nhận phòng lúc: {{ room.checkinTime | date: 'dd/MM/yyyy HH:mm:ss' }} - Trả phòng lúc: {{
+            room.checkoutTime | date: 'dd/MM/yyyy HH:mm:ss'
           }}</span
           >
-        </ng-container>
       </tr>
-      <tr *ngIf="settingValue.expandable" [nzExpand]="room.expand">
-        <ng-container *ngFor="let event of room.events | sortByCheckinTime">
-          <span
-            *ngIf="event.checkinTime && event.checkoutTime"
-            >Nhận phòng lúc: {{ event.checkinTime | date: 'dd/MM/yyyy HH:mm:ss' }} - Trả phòng lúc: {{
-            event.checkoutTime | date: 'dd/MM/yyyy HH:mm:ss'
-          }}</span
-          >
-        </ng-container>
-      </tr>
+      
+     
+      <!-- <li><a class="dropdown-item" (click)="exportXLS()"><i class="file excel outline icon"></i> Excel</a></li> -->
     </ng-container>
     <tr *ngIf="settingValue.totalPayment">
       <td [nzLeft]="fixedColumn"></td>

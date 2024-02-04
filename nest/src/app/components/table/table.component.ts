@@ -1,46 +1,9 @@
 import { Component, OnInit, NgModule } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder } from '@angular/forms';
-import { EventType } from '@angular/router';
 import { NzTableLayout, NzTablePaginationPosition, NzTablePaginationType, NzTableSize } from 'ng-zorro-antd/table';
 import { ProductService } from 'src/app/services/product.service';
 import { RoomsService } from 'src/app/services/rooms.service';
-interface EventData {
-  type: string;
-  checkinTime: Date;
-  checkoutTime: Date;
-  payment: number
-}
-
-interface ItemData {
-  roomNumber: number | string;
-  description: string;
-  checked: boolean;
-  expand: boolean;
-  disabled?: boolean;
-  events: EventData[]; // Thêm thuộc tính events
-}
-
-interface Setting {
-  totalPayment: boolean;
-  bordered: boolean;
-  loading: boolean;
-  pagination: boolean;
-  sizeChanger: boolean;
-  title: boolean;
-  header: boolean;
-  footer: boolean;
-  expandable: boolean;
-  checkbox: boolean;
-  fixHeader: boolean;
-  noResult: boolean;
-  ellipsis: boolean;
-  simple: boolean;
-  size: NzTableSize;
-  tableScroll: TableScroll;
-  tableLayout: NzTableLayout;
-  position: NzTablePaginationPosition;
-  paginationType: NzTablePaginationType;
-}
+import { ItemData, Setting } from 'src/app/interfaces/room';
 
 type TableScroll = 'unset' | 'scroll' | 'fixed';
 
@@ -49,8 +12,6 @@ type TableScroll = 'unset' | 'scroll' | 'fixed';
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.css']
 })
-
-
 
 export class TableComponent implements OnInit {
   switchValue = false;
@@ -201,31 +162,47 @@ export class TableComponent implements OnInit {
 
   private updateListOfData(): void {
     this.productService.products$.subscribe(products => {
-      this.listOfData = products.flatMap(product => 
-        product.events.map((event: EventData) => ({
+      const allEvents: any[] = [];
+  
+      // Flatten the list of events from different room numbers
+      products.forEach(product => {
+        allEvents.push(...product.events.map((event: any) => ({
           roomNumber: product.roomNumber,
-          description: product.description,
-          checked: false,
+          checkoutTime: event.checkoutTime,
+          checkinTime: event.checkinTime,
+          payment: event.payment,
+          type: event.type,
           expand: false,
-          events: [{
-            type: event.type,
-            payment: event.payment,
-            checkinTime: event.checkinTime,
-            checkoutTime: event.checkoutTime
-          }]
-        }))
-      );
-
+          disabled: false,
+        })));
+      });
+  
       this.calculateTotalPayment();
+  
+      // Sort all events by checkout time in descending order
+      allEvents.sort((a, b) => {
+        return new Date(b.checkoutTime).getTime() - new Date(a.checkoutTime).getTime();
+      });
+  
+      const n = allEvents.length;
+      // Take the first item (latest checkout) from the sorted list
+      const latestCheckout = allEvents[0];
+      const nextNCheckouts = allEvents.slice(0, n + 1);
+  
+      this.listOfData = nextNCheckouts;
+      console.log('listOfData',this.listOfData);
+      
     });
   }
+  
+
 
   
 
   private calculateTotalPayment(): void {
     this.totalPayment = this.listOfData.reduce((sum, room) => {
-      const roomPayment = room.events.reduce((eventSum, event) => eventSum + (event.payment || 0), 0);
-      return sum + roomPayment;
+      const roomPayment = sum + (room.payment || 0);
+      return roomPayment;
     }, 0);
   }
 

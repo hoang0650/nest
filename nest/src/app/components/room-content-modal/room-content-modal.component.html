@@ -1,46 +1,52 @@
-<form>
-    <div class="form-row">
-      <div class="form-group col-md-6">
-        <label for="inputEmail4">Email</label>
-        <input type="email" class="form-control" id="inputEmail4" placeholder="Email">
+<div *ngIf="listOfData.length > 0 
+  ">
+    <form>
+      <ng-container *ngFor="let data of listOfData">
+      <div class="form-group">
+          <ng-container *ngFor="let event of data.events">
+
+            <label for="inputAddress"><strong>Phòng: {{data.roomNumber}}</strong></label><br>
+            <label for="inputEmail4">Nhận phòng lúc: {{event.checkinTime | date: 'dd/MM/yyyy HH:mm:ss'}} -
+              Đến: {{event.checkoutTime | date: 'dd/MM/yyyy HH:mm:ss'}}
+            </label><br>
+            <label for="inputAddress">Phòng trống</label><br>
+            <label for="inputAddress">Tổng tiền: {{event.payment}}</label><br>
+          </ng-container>
+          </div>
+      </ng-container>
+  
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="inputCity">City</label>
+          <input type="text" class="form-control" id="inputCity">
+        </div>
+        <div class="form-group col-md-4">
+          <label for="inputState">State</label>
+          <select id="inputState" class="form-control">
+            <option selected>Choose...</option>
+            <option>...</option>
+          </select>
+        </div>
+        <div class="form-group col-md-2">
+          <label for="inputZip">Zip</label>
+          <input type="text" class="form-control" id="inputZip">
+        </div>
       </div>
-      <div class="form-group col-md-6">
-        <label for="inputPassword4">Password</label>
-        <input type="password" class="form-control" id="inputPassword4" placeholder="Password">
+  
+      <div class="form-group">
+        <label for="inputAddress">Address</label>
+        <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St">
       </div>
-    </div>
-    <div class="form-group">
-      <label for="inputAddress">Address</label>
-      <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St">
-    </div>
-    <div class="form-group">
-      <label for="inputAddress2">Address 2</label>
-      <input type="text" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor">
-    </div>
-    <div class="form-row">
-      <div class="form-group col-md-6">
-        <label for="inputCity">City</label>
-        <input type="text" class="form-control" id="inputCity">
-      </div>
-      <div class="form-group col-md-4">
-        <label for="inputState">State</label>
-        <select id="inputState" class="form-control">
-          <option selected>Choose...</option>
-          <option>...</option>
-        </select>
-      </div>
-      <div class="form-group col-md-2">
-        <label for="inputZip">Zip</label>
-        <input type="text" class="form-control" id="inputZip">
-      </div>
-    </div>
-    <div class="form-group">
-      <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="gridCheck">
-        <label class="form-check-label" for="gridCheck">
-          Check me out
-        </label>
-      </div>
-    </div>
-    <button type="submit" class="btn btn-primary">Sign in</button>
-  </form>
+  
+      <!-- Remove the "Address 2" section if not needed -->
+      <!-- <div class="form-group">
+        <label for="inputAddress2">Address 2</label>
+        <input type="text" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor">
+      </div> -->
+    </form>
+</div>
+  
+  <div *ngIf="roomData.roomStatus === 'dirty'">
+    <label for="inputAddress">Dọn Dẹp Phòng</label><br>
+  </div>
+  
