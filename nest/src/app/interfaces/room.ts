@@ -11,7 +11,7 @@ export interface ItemData {
     roomNumber: number | string;
     checked: boolean;
     expand: boolean;
-    disabled?: boolean; // Thêm thuộc tính events
+    disabled: boolean; // Thêm thuộc tính events
     checkoutTime: Date,
     checkinTime: Date,
     payment: number,

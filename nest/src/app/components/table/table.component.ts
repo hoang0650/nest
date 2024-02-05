@@ -39,7 +39,8 @@ export class TableComponent implements OnInit {
     { name: 'Fixed Header', formControlName: 'fixHeader' },
     { name: 'No Result', formControlName: 'noResult' },
     { name: 'Ellipsis', formControlName: 'ellipsis' },
-    { name: 'Simple Pagination', formControlName: 'simple' }
+    { name: 'Simple Pagination', formControlName: 'simple' },
+    { name: 'Show Total', formControlName: 'totalPayment' },
   ];
 
   listOfRadio = [
@@ -120,7 +121,7 @@ export class TableComponent implements OnInit {
       header: [true],
       footer: [true],
       expandable: [true],
-      checkbox: [false],
+      checkbox: [true],
       fixHeader: [false],
       noResult: [false],
       ellipsis: [false],
@@ -173,7 +174,8 @@ export class TableComponent implements OnInit {
           payment: event.payment,
           type: event.type,
           expand: false,
-          disabled: false,
+          // disabled: false,
+          checked: false
         })));
       });
   

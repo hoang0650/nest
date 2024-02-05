@@ -17,7 +17,7 @@
     <h1> 
       <nz-switch [(ngModel)]="switchValue"></nz-switch>
     </h1>
-      <!-- <button nz-button nzType="primary" (click)="exportToExcel()">Export to Excel</button> -->
+
       <button nz-button nzType="primary" (click)="exportToExcel()">
         <span nz-icon nzType="arrow-down" nzTheme="outline">
         </span>
@@ -25,84 +25,77 @@
       </button>
     </div>
 </div>
-  <nz-table
-  #dynamicTable
-  [nzScroll]="{ x: scrollX, y: scrollY }"
-  [nzData]="listOfData"
-  [nzTableLayout]="settingValue.tableLayout"
-  [nzBordered]="settingValue.bordered"
-  [nzSimple]="settingValue.simple"
-  [nzLoading]="settingValue.loading"
-  [nzPaginationType]="settingValue.paginationType"
-  [nzPaginationPosition]="settingValue.position"
-  [nzShowSizeChanger]="settingValue.sizeChanger"
-  [nzFrontPagination]="settingValue.pagination"
-  [nzShowPagination]="settingValue.pagination"
-  [nzFooter]="settingValue.footer ? '' : null"
-  [nzTitle]="settingValue.title ? 'Lịch sử đặt phòng' : null"
-  [nzSize]="settingValue.size"
-  (nzCurrentPageDataChange)="currentPageDataChange($event)"
+<nz-table
+#dynamicTable
+[nzScroll]="{ x: scrollX, y: scrollY }"
+[nzData]="listOfData"
+[nzTableLayout]="settingValue.tableLayout"
+[nzBordered]="settingValue.bordered"
+[nzSimple]="settingValue.simple"
+[nzLoading]="settingValue.loading"
+[nzPaginationType]="settingValue.paginationType"
+[nzPaginationPosition]="settingValue.position"
+[nzShowSizeChanger]="settingValue.sizeChanger"
+[nzFrontPagination]="settingValue.pagination"
+[nzShowPagination]="settingValue.pagination"
+[nzFooter]="settingValue.footer ? '' : null"
+[nzTitle]="settingValue.title ? 'Lịch sử đặt phòng' : null"
+[nzSize]="settingValue.size"
+(nzCurrentPageDataChange)="currentPageDataChange($event)"
 >
-  <thead>
-    <tr *ngIf="settingValue.header">
-      <th nzWidth="40px" *ngIf="settingValue.expandable" [nzLeft]="fixedColumn"></th>
-      <th
-        *ngIf="settingValue.checkbox"
-        nzWidth="60px"
-        [(nzChecked)]="allChecked"
-        [nzLeft]="fixedColumn"
-        [nzIndeterminate]="indeterminate"
-        (nzCheckedChange)="checkAll($event)"
-      ></th>
-      <th [nzLeft]="fixedColumn">Room Number</th>
-      <th [nzLeft]="fixedColumn">Type</th>
-      <th [nzLeft]="fixedColumn">Payment</th>
-      <th [nzRight]="fixedColumn">Action</th>
+<!-- [nzShowTotal]="totalTemplate" -->
+<thead>
+  <tr *ngIf="settingValue.header">
+    <th nzWidth="40px" *ngIf="settingValue.expandable && settingValue.checkbox" [nzLeft]="fixedColumn"></th>
+    <th *ngIf="settingValue.checkbox" nzWidth="60px" [(nzChecked)]="allChecked" [nzLeft]="fixedColumn"
+      [nzIndeterminate]="indeterminate" (nzCheckedChange)="checkAll($event)"></th>
+    <th [nzLeft]="fixedColumn">Room Number</th>
+    <th [nzLeft]="fixedColumn">Type</th>
+    <th [nzLeft]="fixedColumn">Payment</th>
+    <th [nzRight]="fixedColumn">Action</th>
+  </tr>
+</thead>
+<tbody>
+  <ng-container *ngFor="let room of dynamicTable.data">
+    <tr>
+      <td [nzLeft]="fixedColumn" *ngIf="settingValue.expandable" [(nzExpand)]="room.expand">
+      </td>
+      <td [nzLeft]="fixedColumn" *ngIf="settingValue.checkbox" [(nzChecked)]="room.checked"
+        (nzCheckedChange)="refreshStatus()"></td>
+      <td>{{ room['roomNumber'] }}</td>
+      <td [nzLeft]="fixedColumn">{{ room['type'] }}</td>
+      <td [nzEllipsis]="settingValue.ellipsis">{{ room['payment'] }}</td>
+      <td [nzRight]="fixedColumn" [nzEllipsis]="settingValue.ellipsis">
+        <a href="#">Delete</a>
+        <nz-divider nzType="vertical"></nz-divider>
+        <a href="#">More action</a>
+      </td>
     </tr>
-  </thead>
-  <tbody>
-    <ng-container *ngFor="let room of listOfData">
-      <tr *ngIf="!settingValue.expandable && !room.expand" >
-        <td [nzLeft]="fixedColumn" *ngIf="settingValue.expandable" [(nzExpand)]="room.expand">
-        </td>
-        <td
-          [nzLeft]="fixedColumn"
-          *ngIf="settingValue.checkbox"
-          [(nzChecked)]="room.checked"
-          (nzCheckedChange)="refreshStatus()"
-        ></td>
-        <td>{{room['roomNumber']}}</td>
-        <td [nzLeft]="fixedColumn">
-            {{room['type']}}
-        </td>
-        <td [nzEllipsis]="settingValue.ellipsis">
-          {{ room['payment'] }}
-        </td>
-        <td [nzRight]="fixedColumn" [nzEllipsis]="settingValue.ellipsis">
-          <a href="#">Delete</a>
-          <nz-divider nzType="vertical"></nz-divider>
-          <a href="#">More action</a>
-        </td>
-      </tr>
-      <tr *ngIf="settingValue.expandable && listOfData.length > 1" [nzExpand]="room.expand">
-          <span
-            *ngIf="room.checkinTime && room.checkoutTime"
-            >Nhận phòng lúc: {{ room.checkinTime | date: 'dd/MM/yyyy HH:mm:ss' }} - Trả phòng lúc: {{
-            room.checkoutTime | date: 'dd/MM/yyyy HH:mm:ss'
-          }}</span
-          >
-      </tr>
-      
-     
-      <!-- <li><a class="dropdown-item" (click)="exportXLS()"><i class="file excel outline icon"></i> Excel</a></li> -->
-    </ng-container>
-    <tr *ngIf="settingValue.totalPayment">
-      <td [nzLeft]="fixedColumn"></td>
-      <td></td>
-      <td>Total Payment:</td>
-      <td>{{ totalPayment }}</td>
-      <td [nzRight]="fixedColumn"></td>
+    <tr *ngIf="settingValue.expandable" [nzExpand]="room.expand">
+      <span>
+        Nhận phòng lúc: {{ room.checkinTime | date: 'dd/MM/yyyy HH:mm:ss' }} - Trả phòng lúc: {{
+          room.checkoutTime | date: 'dd/MM/yyyy HH:mm:ss' }}
+      </span>
     </tr>
-    
-  </tbody>
+  </ng-container>
+  <tr>
+    <td [nzLeft]="fixedColumn" *ngIf="settingValue.expandable"></td>
+    <td [nzLeft]="fixedColumn" *ngIf="settingValue.checkbox"></td>
+    <td></td>
+    <td>Total Payment:</td>
+    <td *ngIf="settingValue.totalPayment">{{ totalPayment }}</td>
+    <td [nzRight]="fixedColumn"></td>
+  </tr>
+  <!-- <ng-template #totalTemplate>
+    <tr>
+    <td [nzLeft]="fixedColumn" *ngIf="settingValue.expandable"></td>
+    <td [nzLeft]="fixedColumn" *ngIf="settingValue.checkbox"></td>
+    <td></td>
+    <td>Total Payment:</td>
+    <td *ngIf="settingValue.totalPayment">{{ totalPayment }}</td>
+    <td [nzRight]="fixedColumn"></td>
+  </tr>
+  </ng-template> -->
+</tbody>
 </nz-table>
+
