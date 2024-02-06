@@ -47,3 +47,6 @@ nest/typings
 # System files
 nest/.DS_Store
 nest/Thumbs.db
+
+# Local Netlify folder
+.netlify
