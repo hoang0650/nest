@@ -43,44 +43,6 @@ function mongooseSetup() {
 
 mongooseSetup();
 
-const roomHistories = [
-  {
-    roomNumber: 1,
-    events: [
-      { type: 'checkin', checkinTime: new Date('2022-01-01T12:00:00'), checkoutTime: null, payment: 100 },
-      { type: 'checkout', checkinTime: null, checkoutTime: new Date('2022-01-02T10:00:00'), payment: 50 },
-    ],
-  },
-  {
-    roomNumber: 2,
-    events: [
-      { type: 'checkin', checkinTime: new Date('2022-01-03T12:00:00'), checkoutTime: null, payment: 120 },
-      { type: 'checkout', checkinTime: null, checkoutTime: new Date('2022-01-04T10:00:00'), payment: 60 },
-    ],
-  },
-  // Thêm các RoomHistory khác nếu cần
-];
-
-// Mảng chứa kết quả sau khi lọc và gán lại tên
-const formattedEvents = [];
-
-// Duyệt qua từng RoomHistory
-roomHistories.forEach(roomHistory => {
-  // Duyệt qua từng sự kiện trong mảng events
-  roomHistory.events.forEach((event, index) => {
-    // Tạo tên mới dựa trên roomNumber và index
-    const newEventName = `room${roomHistory.roomNumber}-events[${index}]`;
-
-    // Tạo một đối tượng mới với tên mới và dữ liệu sự kiện
-    const newEventObject = { [newEventName]: event};
-
-    // Push đối tượng mới vào mảng kết quả
-    formattedEvents.push(newEventObject);
-  });
-});
-
-console.log(formattedEvents);
-
 //Middleware để xác thực token
 function authentication(req,res,next){
   const token = req.header('Authorization')
