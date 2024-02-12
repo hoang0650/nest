@@ -104,18 +104,21 @@ function calculatePayment(checkinTime, checkoutTime, data) {
   
     if (durationInHours <= 1) {
       payment = data.hourlyRate;
-    } else if (durationInHours > 1 && durationInHours <= 8) {
+    } else if (durationInHours > 1 && durationInHours <= 8 && data.roomType === 'fan') {
       payment += (durationInHours - 1) * 10000;
-    } else if (durationInHours > 8) {
+    } else if (durationInHours > 1 && durationInHours <= 8 && data.roomType === 'single') {
+      payment += (durationInHours - 1) * 15000;
+    } else if (durationInHours > 1 && durationInHours <= 8 && data.roomType === 'double') {
+      payment += (durationInHours - 1) * 20000;
+    }
+     else if (durationInHours > 8 && durationInHours <= 12) {
       // Nếu durationInHours > 8, cộng thêm 10$ cho mỗi giờ tiếp theo sau 8 giờ
-      payment += (8 - 1) * 10000;
-    } else if (durationInHours<=12){
-      payment = data.nightlyRate
-    } else if (durationInHours <= 24){
+      payment = data.nightlyRate;
+    } else if (durationInHours > 12 && durationInHours <= 24){
       payment = data.dailyRate
     } else {
       const nights = Math.ceil(durationInHours / 24);
-      payment = data.nightlyRate * nights;
+      payment = data.dailyRate * nights;
     }
   
     return payment;

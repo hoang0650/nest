@@ -131,7 +131,7 @@ export class ModalControlDirective implements OnInit, OnDestroy {
       // Room is active and last event is check-in, perform check-out    
       lastEvent.type = 'checkout';
       lastEvent.checkoutTime = moment.utc(new Date()).utcOffset(16)
-      lastEvent.payment = this.calculatePayment(lastEvent.checkinTime, lastEvent.checkoutTime);
+      lastEvent.payment = this.calculatePayment(lastEvent.checkinTime, lastEvent.checkoutTime, this.room.roomType);
   
       this.newRoom = {
         roomStatus: 'dirty',
@@ -180,7 +180,7 @@ export class ModalControlDirective implements OnInit, OnDestroy {
     }
   }
 
-  calculatePayment(checkinTime: any, checkoutTime: any): number {
+  calculatePayment(checkinTime: any, checkoutTime: any, roomType: any): number {
     if (checkinTime && checkoutTime) {
       // Chuyển đổi chuỗi ngày thành đối tượng Date
       const checkinDate = new Date(checkinTime);
@@ -196,18 +196,20 @@ export class ModalControlDirective implements OnInit, OnDestroy {
       // Nếu durationInHours < 8, cộng thêm 10$ cho mỗi giờ tiếp theo
       if(durationInHours<=1){
         payment = this.room.hourlyRate;
-      } else if (durationInHours > 1 && durationInHours <= 8) {
+      } else if (durationInHours > 1 && durationInHours <= 8 && roomType === 'fan') {
         payment += (durationInHours - 1) * 10000;
-      } else if (durationInHours > 8) {
-        // Nếu durationInHours > 8, cộng thêm 10$ cho mỗi giờ tiếp theo sau 8 giờ
-        payment += (8 - 1) * 10000;
-      } else if (durationInHours<=12){
-        payment = this.room.nightlyRate
-      } else if (durationInHours < 24){
+      } else if (durationInHours > 1 && durationInHours <= 8 && roomType === 'single') {
+        payment += (durationInHours - 1) * 15000;
+      } else if (durationInHours > 1 && durationInHours <= 8 && roomType === 'double') {
+        payment += (durationInHours - 1) * 20000;
+      }
+       else if (durationInHours > 8 && durationInHours<=12) {
+        payment = this.room.nightlyRate;
+      }  else if (durationInHours > 12 && durationInHours <= 24){
         payment = this.room.dailyRate
       } else {
         const nights = Math.ceil(durationInHours / 24);
-        payment = this.room.nightlyRate * nights;
+        payment = this.room.dailyRate * nights;
       }
   
       return payment;

@@ -101,7 +101,7 @@ export class ProductService {
     return this.productsSource.asObservable();
   }
 
-  getProductById(id: number): any {
+  getProductById(id: any): any {
     // Lấy sản phẩm từ dữ liệu hiện tại
     const currentProducts = this.productsSource.value;
     return currentProducts.find(product => product.roomNumber === id);
