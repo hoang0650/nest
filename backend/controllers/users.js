@@ -33,6 +33,7 @@ function login(req, res) {
             if (!user) {
                 return res.status(401).json({ message: 'Invalid credentials' });
             }
+            console.log('user',user);
             const payloadData = {
                 userId: user.userId,
                 usename: user.usename,
