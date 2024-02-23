@@ -45,6 +45,7 @@ import { SortByCheckinTimePipe } from './pipes/sort-by-checkin-time.pipe';
 import { UnauthorizedComponent } from './components/unauthorized/unauthorized.component';
 import { NotfoundComponent } from './components/notfound/notfound.component';
 import { RoomContentModalComponent } from './components/room-content-modal/room-content-modal.component';
+import { InvoiceComponent } from './components/invoice/invoice.component';
 
 registerLocaleData(en);
 
@@ -67,7 +68,8 @@ registerLocaleData(en);
     SortByCheckinTimePipe,
     UnauthorizedComponent,
     NotfoundComponent,
-    RoomContentModalComponent
+    RoomContentModalComponent,
+    InvoiceComponent
   ],
   imports: [
     BrowserModule,

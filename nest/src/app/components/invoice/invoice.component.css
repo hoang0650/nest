@@ -1,0 +1,16 @@
+/* CSS chung */
+.nz-card {
+    width: 100%;
+  }
+  
+  /* Responsive CSS */
+  @media (max-width: 480px) {
+    .nz-table {
+      overflow-x: auto;
+    }
+  
+    .nz-table td, .nz-table th {
+      white-space: nowrap;
+    }
+  }
+  

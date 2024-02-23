@@ -1,0 +1,52 @@
+<nz-card>
+  <div nz-title>Hóa Đơn {{ invoiceData?.invoiceNumber }}</div>
+  <div nz-body>
+    <p>Ngày: {{ invoiceData?.date | date: 'dd/MM/yyyy' }}</p>
+
+    <nz-table [nzData]="invoiceData?.products" nzShowPagination="false">
+      <thead>
+        <tr>
+          <th class="hidden-mobile">Tên hàng<br>(Product)</th>
+          <th class="hidden-mobile">Số lượng<br>(Quantity)</th>
+          <th>Đơn giá<br>(Unit)</th>
+          <th>Thành tiền<br>(Price)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let product of invoiceData?.products">
+          <td class="hidden-mobile">101</td>
+          <td class="hidden-mobile">1</td>
+          <td>{{ product.price | currency: 'VND' }}</td>
+          <td>{{ product.price | currency: 'VND' }}</td>
+        </tr>
+        <tr>
+          <td><strong>Phụ thu(Charges):</strong></td>
+          <td></td>
+          <td></td>
+          <td>
+            <p>0</p>
+          </td>
+        </tr>
+        <tr>
+          <td><strong>Khuyến mãi(Discount):</strong></td>
+          <td></td>
+          <td></td>
+          <td>
+            <p>0</p>
+          </td>
+        </tr>
+        <tr>
+          <td><strong>Tổng tiền(Total):</strong></td>
+          <td></td>
+          <td></td>
+          <td>
+            <p>{{ invoiceData?.totalAmount | currency: 'VND' }}</p>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+  <div nz-actions>
+    <button nz-button nzType="primary" (click)="exportInvoice()">Xuất Hóa Đơn</button>
+  </div>
+</nz-card>

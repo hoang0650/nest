@@ -5,6 +5,7 @@ import { take, takeUntil } from 'rxjs/operators';
 import { Subject} from 'rxjs';
 import * as moment from 'moment-timezone';
 import { RoomContentModalComponent } from '../components/room-content-modal/room-content-modal.component';
+import { InvoiceComponent } from '../components/invoice/invoice.component';
 
 
 @Directive({
@@ -149,6 +150,8 @@ export class ModalControlDirective implements OnInit, OnDestroy {
           console.log('Check-in/out successful. Room:', room);
           this.roomsService.notifyRoomDataUpdated();
           this.modalRef?.close();
+          const invoiceData = this.generateInvoice(this.room.roomNumber);
+          this.showInvoice(invoiceData);
         },
         (error) => {
           console.error('Error during check-in/out:', error);
@@ -217,6 +220,36 @@ export class ModalControlDirective implements OnInit, OnDestroy {
       // Handle the case where checkinTime or checkoutTime is undefined
       return 0;
     }
+  }
+
+  generateInvoice(roomNumber: number): any {
+    // Thực hiện logic tạo dữ liệu hóa đơn dựa trên thông tin phòng và checkout
+    // ...
+
+    return {
+      invoiceNumber: 'INV-001',
+      date: '2024-02-01',
+      products: [
+        { name: 'Tiền phòng tháng 1', price: 70000 },
+        { name: 'Tiền phòng tháng 2', price: 70000 }
+      ],
+      totalAmount: 140000,
+    };
+  }
+
+  showInvoice(invoiceData: any): void {
+    const modalRef = this.modalService.create({
+      nzTitle: 'Hóa Đơn',
+      nzContent: InvoiceComponent,
+      nzComponentParams: {
+        invoiceData
+      },
+      nzFooter: null
+    });
+
+    modalRef.afterClose.subscribe(() => {
+      // Xử lý sau khi đóng modal (nếu cần)
+    });
   }
   
   
