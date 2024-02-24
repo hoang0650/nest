@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ItemData} from 'src/app/interfaces/room';
+import { ItemData } from 'src/app/interfaces/room';
 import { ProductService } from 'src/app/services/product.service';
 
 @Component({
@@ -12,23 +12,23 @@ export class RoomContentModalComponent implements OnInit {
 
   @Input() roomData: any; // Assuming you will pass roomData as an Input
 
-  listData: any [] = []
+  listData: any[] = []
 
   constructor() { }
 
   ngOnInit(): void {
-  this.fetchCurrentRoom()
+    this.fetchCurrentRoom()
   }
 
-  fetchCurrentRoom(): void{
-    if(this.roomData.roomNumber){
-      const lastEvents = this.roomData.events[this.roomData.events.length -1]
-      this.listData =[lastEvents]
-    }   
+  fetchCurrentRoom(): void {
+    if (this.roomData.roomNumber) {
+      const lastEvents = this.roomData.events[this.roomData.events.length - 1]
+      this.listData = [lastEvents]
+    }
   }
 
 
-  
+
 
 }
 

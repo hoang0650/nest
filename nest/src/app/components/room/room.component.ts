@@ -2,8 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { ProductService } from 'src/app/services/product.service';
 import { Subscription } from 'rxjs';
 import { NzMarks } from 'ng-zorro-antd/slider';
-import { ModalService } from 'src/app/services/modal.service';
-import { ModalControlDirective } from 'src/app/directives/modal-control.directive';
 import { RoomsService } from 'src/app/services/rooms.service';
 
 @Component({

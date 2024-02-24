@@ -3,7 +3,6 @@ import { NzModalService, NzModalRef } from 'ng-zorro-antd/modal';
 import { RoomsService } from '../services/rooms.service';
 import { take, takeUntil } from 'rxjs/operators';
 import { Subject} from 'rxjs';
-import * as moment from 'moment-timezone';
 import { RoomContentModalComponent } from '../components/room-content-modal/room-content-modal.component';
 import { InvoiceComponent } from '../components/invoice/invoice.component';
 
@@ -111,7 +110,7 @@ export class ModalControlDirective implements OnInit, OnDestroy {
           ...this.room.events,
           {
             type: 'checkin',
-            checkinTime: moment.utc(new Date()).utcOffset(16),
+            checkinTime: new Date(),
           },
         ],
       };
@@ -131,7 +130,7 @@ export class ModalControlDirective implements OnInit, OnDestroy {
     } else if (this.room.roomStatus === 'active' && lastEvent.type === 'checkin') {
       // Room is active and last event is check-in, perform check-out    
       lastEvent.type = 'checkout';
-      lastEvent.checkoutTime = moment.utc(new Date()).utcOffset(16)
+      lastEvent.checkoutTime = new Date()
       lastEvent.payment = this.calculatePayment(lastEvent.checkinTime, lastEvent.checkoutTime, this.room.roomType);
   
       this.newRoom = {
@@ -229,11 +228,14 @@ export class ModalControlDirective implements OnInit, OnDestroy {
     return {
       invoiceNumber: 'INV-001',
       date: '2024-02-01',
+      customerName: 'Phan Huy Hoang',
+      customerPhone: +84931881584,
+      customerAddress: 'Binh Duong',
       products: [
-        { name: 'Tiền phòng tháng 1', price: 70000 },
-        { name: 'Tiền phòng tháng 2', price: 70000 }
+        { name: 'Tiền phòng 101', price: 260000 },
+        { name: 'Nước ngọt', price: 15000 }
       ],
-      totalAmount: 140000,
+      totalAmount: 275000,
     };
   }
 

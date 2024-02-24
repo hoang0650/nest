@@ -23,8 +23,6 @@
     "angular2-jwt": "^0.2.3",
     "bootstrap": "^5.2.3",
     "firebase": "^9.17.1",
-    "lodash": "^4.17.21",
-    "moment-timezone": "^0.5.44",
     "ng-zorro-antd": "^14.0.0",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
