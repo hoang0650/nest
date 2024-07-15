@@ -1,5 +1,4 @@
 const { Room } = require("../models/rooms");
-const moment = require('moment-timezone');
 async function getallRooms(req, res) {
   try {
     const rooms = await Room.find();
@@ -10,7 +9,6 @@ async function getallRooms(req, res) {
   }
 
 }
-
 
 //check in
 function checkinRoom(req, res) {
@@ -26,7 +24,7 @@ function checkinRoom(req, res) {
     then((room)=>{
         room.events.push({
           type:'checkin',
-          checkinTime: moment.utc(new Date()).utcOffset(16),
+          checkinTime: new Date(),
         })
         room.roomStatus ='active';
         room.save()
@@ -37,7 +35,6 @@ function checkinRoom(req, res) {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 }
-
 
 //check out
 async function checkoutRoom(req, res) {
@@ -51,7 +48,7 @@ async function checkoutRoom(req, res) {
     
     if (lastCheckinEvent) {
       lastCheckinEvent.type = 'checkout';
-      lastCheckinEvent.checkoutTime = moment.utc(new Date()).utcOffset(16);
+      lastCheckinEvent.checkoutTime = new Date();
       // Calculate and update the payment
       const payment = calculatePayment(lastCheckinEvent.checkinTime, lastCheckinEvent.checkoutTime,room);
       lastCheckinEvent.payment = payment;
@@ -91,14 +88,101 @@ function cleanRoom(req, res) {
   }
 }
 
+function updateOptions(req, res) {
+  
+  try {
+    const id = req.params.id;
+    const selectedOption = req.body.selectedOption
+    console.log('selectedOption',selectedOption)
+    if (!id) {
+      return res.status(404).json({ error: 'Room not found' });
+    }
+ 
+    Room.findByIdAndUpdate(id).
+    then((room)=>{
+      switch (selectedOption) {
+        case 'night':
+            // room.options.isNight = true;
+            // room.options.isDay = false;
+            return 'Qua đêm';
+        case 'day':
+            // room.options.isNight = false;
+            // room.options.isDay = true;
+            return 'Ngày đêm';
+        case 'none':
+            // room.options.isNight = false;
+            // room.options.isDay = false;
+            return 'Tính giờ';
+        default: 'none';
+    }
+    if(selectedOption === 'night'){
+      room.options.isNight = true;
+      room.options.isDay = false;
+    } else if(selectedOption === 'day'){
+      room.options.isNight = false;
+      room.options.isDay = true;
+    } else {
+      room.options.isNight = false;
+      room.options.isDay = false;
+    }
+    console.log('selectedOption',selectedOption)
+        room.save()
+        res.status(200).json(room)
+    })
+  } catch (error) {
+    console.error('Error during clean room:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+}
+
+//update calculate room
+// const updateOptions = async (roomId, selectedOption) => {
+//   const room = await Room.findById(roomId);
+
+//   if (!room) {
+//       throw new Error('Room not found');
+//   }
+
+//   switch (selectedOption) {
+//       case 'night':
+//           room.options = 'night';
+//           room.options.isNight = true;
+//           room.options.isDay = false;
+//           break;
+//       case 'day':
+//           room.options = 'day';
+//           room.options.isNight = false;
+//           room.options.isDay = true;
+//           break;
+//       case 'none':
+//           room.options = 'none';
+//           room.options.isNight = false;
+//           room.options.isDay = false;
+//           break;
+//       default:
+//           throw new Error('Invalid option');
+//   }
+
+//   await room.save();
+//   return room;
+// }
+
 
 
 function calculatePayment(checkinTime, checkoutTime, data) {
   if(checkinTime && checkoutTime){
-
+    const checkoutHour = checkinTime.getHours();
     const durationInHours = Math.ceil((checkoutTime - checkinTime) / (1000 * 60 * 60));
-  
+    const checkOutHourLimit = 22;
     let payment = 0;
+
+    if(data.options.isNight || checkoutHour >= checkOutHourLimit){
+      payment = data.nightlyRate
+    }
+
+    if(data.options.isDay){
+      payment = data.dailyRate
+    }
   
     payment += data.hourlyRate
   
@@ -133,5 +217,6 @@ module.exports = {
   getallRooms,
   checkinRoom,
   checkoutRoom,
-  cleanRoom
+  cleanRoom,
+  updateOptions
 }
