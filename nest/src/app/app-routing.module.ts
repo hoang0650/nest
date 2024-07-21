@@ -9,13 +9,20 @@ import { ModalComponent } from './components/modal/modal.component';
 import { UnauthorizedComponent } from './components/unauthorized/unauthorized.component';
 import { NotfoundComponent } from './components/notfound/notfound.component';
 import { InvoiceComponent } from './components/invoice/invoice.component';
+import { RoomHistoryComponent } from './components/room-history/room-history.component';
+import { RoomComponent } from './components/room/room.component';
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: 'home', component: HomeComponent},
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent},
   { path: 'product/:id', component: ProductDetailComponent},
-  { path: 'admin', component: AdminComponent},
+  { path: 'admin', component: AdminComponent,children: [
+    { path: 'room', component: RoomComponent },
+    { path: 'history', component: RoomHistoryComponent },
+    { path: 'bill', component: InvoiceComponent },
+    // Thêm các route con khác nếu cần
+  ]},
   { path: 'modal', component: ModalComponent},
   { path: 'unauthorized', component: UnauthorizedComponent},
   { path: 'notfound', component: NotfoundComponent},

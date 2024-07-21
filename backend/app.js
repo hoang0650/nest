@@ -7,6 +7,7 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var roomsRouter = require('./routes/rooms')
+var hotelsRouter = require('./routes/hotels')
 const jwt =require('jsonwebtoken')
 const cors = require('cors');
 const dotenv = require('dotenv');
@@ -54,6 +55,15 @@ function authentication(req,res,next){
   })
 }
 
+// Middleware để kiểm tra role
+const authorize = (roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) return res.status(403).send('Forbidden');
+
+    next();
+  };
+};
+
 var app = express();
 
 // view engine setup
@@ -70,6 +80,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/rooms', roomsRouter);
+app.use('/hotels', hotelsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

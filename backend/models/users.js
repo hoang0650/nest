@@ -24,25 +24,19 @@ const UserSchema = new Schema({
     role: {
         type: String, default: 'user'
     },
-    created_at: { type: Date, default: Date.now},
-    history: Array,
-    tmpHistory: {
-        hId: String,
-        hName: String,
-        hType: String,
-        hTime: Date,
-        hValues: Schema.Types.Mixed
-    },
-    favorite: Array,
-    tmpFavorite: {
-        fId: String,
-        fName: String,
-        fType: String,
-        fStatus: Boolean,
-        fTime: Date
-    }
-
+    loyaltyPoints: { type: Number, default: 0 },
+    bookings: [{ type: mongoose.SchemaTypes.ObjectId, ref: 'Booking' }],
+    offers: [{ type: mongoose.SchemaTypes.ObjectId, ref: 'Offer' }],
+    hotelId: { type: mongoose.SchemaTypes.ObjectId, ref: 'Hotel' },
+    businessId: { type: mongoose.SchemaTypes.ObjectId, ref: 'Business' },
+    createdAt: { type: Date, default: Date.now },
+    loginHistory: [
+        {
+            loginDate: { type: Date, default: Date.now },
+            ipAddress: String
+        }
+    ]
 })
 
 const User = mongoose.model('User', UserSchema);
-module.exports = {User};
+module.exports = { User };

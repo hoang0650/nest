@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const roomSchema = new mongoose.Schema({
+    hotelId: { type: mongoose.SchemaTypes.ObjectId, ref: 'Hotel' },
     roomNumber: {
         type: Number,
         required: true,
@@ -36,6 +37,21 @@ const roomSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    // events: [
+    //     {
+    //         type: {
+    //             type: String,
+    //             enum: ['checkin', 'checkout', 'notpay'],
+    //             required: true,
+    //         },
+    //         checkinTime: { type: Date },
+    //         checkoutTime: { type: Date },
+    //         payment: {
+    //             type: Number,
+    //             default: 0,
+    //         },
+    //     },
+    // ],
     events: [
         {
             type: {
@@ -51,6 +67,7 @@ const roomSchema = new mongoose.Schema({
             },
         },
     ],
+    bookingHistory: [{ type: mongoose.SchemaTypes.ObjectId, ref: 'Booking' }]
 });
 
 const Room = mongoose.model('Room', roomSchema);
