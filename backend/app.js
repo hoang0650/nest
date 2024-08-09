@@ -6,8 +6,9 @@ var logger = require('morgan');
 // const db = require('./db')
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-var roomsRouter = require('./routes/rooms')
-var hotelsRouter = require('./routes/hotels')
+var roomsRouter = require('./routes/rooms');
+var hotelsRouter = require('./routes/hotels');
+var bookingsRouter = require('./routes/bookings')
 const jwt =require('jsonwebtoken')
 const cors = require('cors');
 const dotenv = require('dotenv');
@@ -81,6 +82,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/rooms', roomsRouter);
 app.use('/hotels', hotelsRouter);
+app.use('/bookings', bookingsRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

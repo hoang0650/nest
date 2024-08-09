@@ -7,7 +7,6 @@ router.post('/checkout/:id', checkoutRoom);
 router.post('/clean/:id',cleanRoom);
 router.get('/', getallRooms);
 
-// router.get('/',findOneByUserId);
 
 
 module.exports = router;

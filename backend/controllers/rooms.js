@@ -102,16 +102,16 @@ function updateOptions(req, res) {
     then((room)=>{
       switch (selectedOption) {
         case 'night':
-            // room.options.isNight = true;
-            // room.options.isDay = false;
+            room.options.isNight = true;
+            room.options.isDay = false;
             return 'Qua đêm';
         case 'day':
-            // room.options.isNight = false;
-            // room.options.isDay = true;
+            room.options.isNight = false;
+            room.options.isDay = true;
             return 'Ngày đêm';
         case 'none':
-            // room.options.isNight = false;
-            // room.options.isDay = false;
+            room.options.isNight = false;
+            room.options.isDay = false;
             return 'Tính giờ';
         default: 'none';
     }
@@ -128,45 +128,13 @@ function updateOptions(req, res) {
     console.log('selectedOption',selectedOption)
         room.save()
         res.status(200).json(room)
-    })
+    }
+  )
   } catch (error) {
     console.error('Error during clean room:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 }
-
-//update calculate room
-// const updateOptions = async (roomId, selectedOption) => {
-//   const room = await Room.findById(roomId);
-
-//   if (!room) {
-//       throw new Error('Room not found');
-//   }
-
-//   switch (selectedOption) {
-//       case 'night':
-//           room.options = 'night';
-//           room.options.isNight = true;
-//           room.options.isDay = false;
-//           break;
-//       case 'day':
-//           room.options = 'day';
-//           room.options.isNight = false;
-//           room.options.isDay = true;
-//           break;
-//       case 'none':
-//           room.options = 'none';
-//           room.options.isNight = false;
-//           room.options.isDay = false;
-//           break;
-//       default:
-//           throw new Error('Invalid option');
-//   }
-
-//   await room.save();
-//   return room;
-// }
-
 
 
 function calculatePayment(checkinTime, checkoutTime, data) {
@@ -176,12 +144,8 @@ function calculatePayment(checkinTime, checkoutTime, data) {
     const checkOutHourLimit = 22;
     let payment = 0;
 
-    if(data.options.isNight || checkoutHour >= checkOutHourLimit){
+    if(checkoutHour >= checkOutHourLimit){
       payment = data.nightlyRate
-    }
-
-    if(data.options.isDay){
-      payment = data.dailyRate
     }
   
     payment += data.hourlyRate

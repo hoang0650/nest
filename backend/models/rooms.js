@@ -37,21 +37,6 @@ const roomSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    // events: [
-    //     {
-    //         type: {
-    //             type: String,
-    //             enum: ['checkin', 'checkout', 'notpay'],
-    //             required: true,
-    //         },
-    //         checkinTime: { type: Date },
-    //         checkoutTime: { type: Date },
-    //         payment: {
-    //             type: Number,
-    //             default: 0,
-    //         },
-    //     },
-    // ],
     events: [
         {
             type: {
@@ -67,7 +52,14 @@ const roomSchema = new mongoose.Schema({
             },
         },
     ],
-    bookingHistory: [{ type: mongoose.SchemaTypes.ObjectId, ref: 'Booking' }]
+    bookingHistory: [
+        {
+          event: String, // e.g., 'check-in', 'check-out', 'payment'
+          date: Date,
+          bookingId: { type: mongoose.SchemaTypes.ObjectId, ref: 'Booking' },
+          amount: Number // chỉ cho sự kiện 'payment'
+        }
+      ]
 });
 
 const Room = mongoose.model('Room', roomSchema);

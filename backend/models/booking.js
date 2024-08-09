@@ -6,7 +6,7 @@ const bookingHotel = new mongoose.Schema({
   checkInDate: Date,
   checkOutDate: Date,
   status: String,
-  paymentStatus: { type: String, default: 'pending' }, // pending, paid, cancelled
+  paymentStatus: { type: String, enum: ['pending', 'paid', 'cancelled'], default: 'pending' }, // pending, paid, cancelled
   paymentDetails: {
     roomNumber: Number, // thêm trường này
     amount: Number,
