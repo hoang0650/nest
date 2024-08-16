@@ -88,54 +88,6 @@ function cleanRoom(req, res) {
   }
 }
 
-function updateOptions(req, res) {
-  
-  try {
-    const id = req.params.id;
-    const selectedOption = req.body.selectedOption
-    console.log('selectedOption',selectedOption)
-    if (!id) {
-      return res.status(404).json({ error: 'Room not found' });
-    }
- 
-    Room.findByIdAndUpdate(id).
-    then((room)=>{
-      switch (selectedOption) {
-        case 'night':
-            room.options.isNight = true;
-            room.options.isDay = false;
-            return 'Qua đêm';
-        case 'day':
-            room.options.isNight = false;
-            room.options.isDay = true;
-            return 'Ngày đêm';
-        case 'none':
-            room.options.isNight = false;
-            room.options.isDay = false;
-            return 'Tính giờ';
-        default: 'none';
-    }
-    if(selectedOption === 'night'){
-      room.options.isNight = true;
-      room.options.isDay = false;
-    } else if(selectedOption === 'day'){
-      room.options.isNight = false;
-      room.options.isDay = true;
-    } else {
-      room.options.isNight = false;
-      room.options.isDay = false;
-    }
-    console.log('selectedOption',selectedOption)
-        room.save()
-        res.status(200).json(room)
-    }
-  )
-  } catch (error) {
-    console.error('Error during clean room:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-}
-
 
 function calculatePayment(checkinTime, checkoutTime, data) {
   if(checkinTime && checkoutTime){
@@ -182,5 +134,4 @@ module.exports = {
   checkinRoom,
   checkoutRoom,
   cleanRoom,
-  updateOptions
 }

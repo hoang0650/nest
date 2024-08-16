@@ -1,36 +1,22 @@
 const mongoose = require('mongoose');
 
-const bookingHotel = new mongoose.Schema({
+const bookingHotelSchema = new mongoose.Schema({
   customerId: { type: mongoose.SchemaTypes.ObjectId, ref: 'User' },
   roomId: { type: mongoose.SchemaTypes.ObjectId, ref: 'Room' },
   checkInDate: Date,
   checkOutDate: Date,
   status: String,
-  paymentStatus: { type: String, enum: ['pending', 'paid', 'cancelled'], default: 'pending' }, // pending, paid, cancelled
+  paymentStatus: { type: String, enum: ['pending', 'paid', 'cancelled'], default: 'pending' },
   paymentDetails: {
-    roomNumber: Number, // thêm trường này
+    roomNumber: Number,
     amount: Number,
     checkInTime: Date,
     checkOutTime: Date,
-    paymentMethod: { type: String, enum: ['cash', 'banking', 'others'], default: 'cash', required: true }, // e.g., cash, banking, etc.
+    paymentMethod: { type: String, enum: ['cash', 'banking', 'others'], default: 'cash', required: true },
   },
-  tempayment: Number // thêm trường này
-  // events: [
-    //     {
-    //         type: {
-    //             type: String,
-    //             enum: ['checkin', 'checkout', 'notpay'],
-    //             required: true,
-    //         },
-    //         checkinTime: { type: Date },
-    //         checkoutTime: { type: Date },
-    //         payment: {
-    //             type: Number,
-    //             default: 0,
-    //         },
-    //     },
-    // ],
+  tempayment: Number,
+  rateType: { type: String, enum: ['hourly', 'daily', 'nightly'], required: true }, // Add this field
 });
 
-const Booking = mongoose.model('Booking', bookingHotel)
+const Booking = mongoose.model('Booking', bookingHotelSchema)
 module.exports = { Booking }
