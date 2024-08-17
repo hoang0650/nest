@@ -18,14 +18,8 @@ const roomSchema = new mongoose.Schema({
     required: true,
   },
   hourlyRate: {
-    initial: {
-      type: Number,
-      required: true,
-    },
-    additional: {
-      type: Number,
-      required: true,
-    }
+    type: Number,
+    required: true,
   },
   dailyRate: {
     type: Number,
@@ -44,6 +38,21 @@ const roomSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  events: [
+    {
+        type: {
+            type: String,
+            enum: ['checkin', 'checkout', 'notpay'],
+            required: true,
+        },
+        checkinTime: { type: Date },
+        checkoutTime: { type: Date },
+        payment: {
+            type: Number,
+            default: 0,
+        },
+    },
+],
   bookingHistory: [
     {
       event: {

@@ -10,7 +10,15 @@ const hotelSchema = new mongoose.Schema({
     },
     businessId: {type: mongoose.SchemaTypes.ObjectId, ref: 'Business'},
     rooms : [{type: mongoose.SchemaTypes.ObjectId, ref: 'Room'}],
-    staff: [{type: mongoose.SchemaTypes.ObjectId, ref: 'Staff'}]
+    staff: [{type: mongoose.SchemaTypes.ObjectId, ref: 'Staff'}],
+    services: [
+        {
+          name: String,
+          description: String,
+          quantity: Number,
+          price: Number
+        }
+    ]
 });
 
 const Hotel = mongoose.model('Hotel', hotelSchema);
