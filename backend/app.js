@@ -10,6 +10,7 @@ var roomsRouter = require('./routes/rooms');
 var hotelsRouter = require('./routes/hotels');
 var bookingsRouter = require('./routes/bookings')
 var businessRouter = require('./routes/business')
+var staffsRouter = require('./routes/staffs')
 const jwt =require('jsonwebtoken')
 const cors = require('cors');
 const dotenv = require('dotenv');
@@ -85,6 +86,7 @@ app.use('/rooms', roomsRouter);
 app.use('/hotels', hotelsRouter);
 app.use('/bookings', bookingsRouter);
 app.use('/businesses',businessRouter);
+app.use('/staffs',staffsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
