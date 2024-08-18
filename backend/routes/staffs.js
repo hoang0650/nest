@@ -7,7 +7,7 @@ router.get('/', getStaff);
 // Create a new hotel
 router.get('/', getStaffById);
 // Get a specific hotel by ID
-router.post('/:id', createStaff);
+router.post('/', createStaff);
 // Update a hotel
 router.put('/:id', updateStaff);
 // Delete a hotel
