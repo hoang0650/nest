@@ -18,8 +18,3 @@ router.put('/:id', updateBusiness);
 router.delete('/:id', deleteBusiness);
 
 module.exports = router;
-
-
-
-
-module.exports = router;

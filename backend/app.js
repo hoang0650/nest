@@ -3,6 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const nodemailer = require('nodemailer');
 // const db = require('./db')
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -11,6 +12,7 @@ var hotelsRouter = require('./routes/hotels');
 var bookingsRouter = require('./routes/bookings')
 var businessRouter = require('./routes/business')
 var staffsRouter = require('./routes/staffs')
+var emailsRouter = require('./routes/emails')
 const jwt =require('jsonwebtoken')
 const cors = require('cors');
 const dotenv = require('dotenv');
@@ -67,6 +69,14 @@ const authorize = (roles) => {
   };
 };
 
+const transporter = nodemailer.createTransport({
+  service: 'gmail', // hoặc dịch vụ email bạn chọn
+  auth: {
+    user: 'your-email@gmail.com',
+    pass: 'your-email-password'
+  }
+});
+
 var app = express();
 
 // view engine setup
@@ -87,6 +97,7 @@ app.use('/hotels', hotelsRouter);
 app.use('/bookings', bookingsRouter);
 app.use('/businesses',businessRouter);
 app.use('/staffs',staffsRouter);
+app.use('/emails',emailsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
