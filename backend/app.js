@@ -13,9 +13,11 @@ var bookingsRouter = require('./routes/bookings')
 var businessRouter = require('./routes/business')
 var staffsRouter = require('./routes/staffs')
 var emailsRouter = require('./routes/emails')
+var chatsRouter = require('./routes/chat')
 const jwt =require('jsonwebtoken')
 const cors = require('cors');
 const dotenv = require('dotenv');
+const socketIo = require('socket.io');
 dotenv.config();
 
 //set up mongoose
@@ -48,6 +50,34 @@ function mongooseSetup() {
 }
 
 mongooseSetup();
+
+// Khi một client kết nối
+io.on('connection', (socket) => {
+  console.log('User connected:', socket.id);
+
+  // Khi client yêu cầu tham gia nhóm
+  socket.on('joinGroup', (groupId) => {
+    socket.join(groupId);
+    console.log(`User ${socket.id} joined group ${groupId}`);
+  });
+
+  // Khi client gửi tin nhắn văn bản
+  socket.on('sendMessage', async (message) => {
+    const savedMessage = await Message.create(message);
+    io.to(message.groupId).emit('receiveMessage', savedMessage);
+  });
+
+  // Khi client gửi hình ảnh
+  socket.on('sendImage', async (imageData) => {
+    const savedImage = await Message.create(imageData);
+    io.to(imageData.groupId).emit('receiveImage', savedImage);
+  });
+
+  // Khi client ngắt kết nối
+  socket.on('disconnect', () => {
+    console.log('User disconnected:', socket.id);
+  });
+});
 
 //Middleware để xác thực token
 function authentication(req,res,next){
@@ -98,6 +128,7 @@ app.use('/bookings', bookingsRouter);
 app.use('/businesses',businessRouter);
 app.use('/staffs',staffsRouter);
 app.use('/emails',emailsRouter);
+app.use('/chats',chatsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

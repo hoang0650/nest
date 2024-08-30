@@ -64,7 +64,8 @@ const roomSchema = new mongoose.Schema({
       bookingId: { type: mongoose.SchemaTypes.ObjectId, ref: 'Booking' },
       amount: Number // chỉ cho sự kiện 'payment'
     }
-  ]
+  ],
+  rateType: { type: String, enum: ['hourly', 'daily', 'nightly'], required: true }, // Add this field
 });
 
 const Room = mongoose.model('Room', roomSchema);

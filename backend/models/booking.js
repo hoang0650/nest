@@ -14,7 +14,6 @@ const bookingHotelSchema = new mongoose.Schema({
     checkOutTime: Date,
     paymentMethod: { type: String, enum: ['cash', 'banking', 'others'], default: 'cash', required: true },
   },
-  tempayment: Number,
   rateType: { type: String, enum: ['hourly', 'daily', 'nightly'], required: true }, // Add this field
 });
 

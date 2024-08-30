@@ -1,5 +1,5 @@
 const { Booking } = require("../models/booking");
-
+const { Room} = require('../models/rooms')
 
 const calculateRoomCost = async (bookingId) => {
   try {
@@ -73,6 +73,49 @@ const calculateDuration = (checkInDate, checkOutDate) => {
   const millisecondsPerDay = 24 * 60 * 60 * 1000;
   return Math.round((checkOutDate - checkInDate) / millisecondsPerDay);
 };
+
+const checkout = async (req, res) => {
+  try {
+    const { bookingId } = req.body;
+
+    const booking = await Booking.findById(bookingId).populate('roomId');
+    if (!booking) {
+      return res.status(404).json({ message: 'Booking không tồn tại' });
+    }
+
+    const checkOutTime = new Date();
+    booking.checkOutDate = checkOutTime;
+
+    const checkInTime = booking.checkInDate;
+    const rateType = booking.rateType;
+    const room = booking.roomId;
+    let amount = 0;
+
+    // Tính toán số tiền dựa trên rateType
+    if (rateType === 'hourly') {
+      const hoursStayed = Math.ceil((checkOutTime - checkInTime) / (1000 * 60 * 60)); // Chuyển đổi từ mili giây sang giờ
+      amount = hoursStayed * room.hourlyRate;
+    } else if (rateType === 'daily') {
+      const daysStayed = Math.ceil((checkOutTime - checkInTime) / (1000 * 60 * 60 * 24)); // Chuyển đổi từ mili giây sang ngày
+      amount = daysStayed * room.dailyRate;
+    } else if (rateType === 'nightly') {
+      const nightsStayed = Math.ceil((checkOutTime - checkInTime) / (1000 * 60 * 60 * 24)); // Tính số đêm ở lại
+      amount = nightsStayed * room.nightlyRate;
+    }
+
+    booking.paymentDetails.amount = amount;
+    booking.paymentStatus = 'pending';
+    booking.status = 'checked-out';
+
+    await booking.save();
+
+    res.status(200).json({ message: 'Check-out thành công!', booking });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Có lỗi xảy ra trong quá trình check-out.' });
+  }
+};
+
 
 
 

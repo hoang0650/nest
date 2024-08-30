@@ -21,9 +21,16 @@ const UserSchema = new Schema({
     blocked: {
         type: Boolean, default: false
     },
-    role: {
-        type: String, default: 'user'
+    online: {
+        type: Boolean, default: false
     },
+    role: { 
+        type: String, 
+        enum: ['business', 'hotel', 'staff', 'customer'],
+        default: 'customer',
+        required: true, 
+    },
+    avatar: { type: String},
     loyaltyPoints: { type: Number, default: 0 },
     bookings: [{ type: mongoose.SchemaTypes.ObjectId, ref: 'Booking' }],
     offers: [{ type: mongoose.SchemaTypes.ObjectId, ref: 'Offer' }],
