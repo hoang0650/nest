@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const MessageSchema = new mongoose.Schema({
   senderId: { type: mongoose.SchemaTypes.ObjectId, ref: 'User', required: true },
   receiverId: { type: mongoose.SchemaTypes.ObjectId, ref: 'User', required: true },
-  groupId: { type: Schema.Types.ObjectId, ref: 'Group' },
+  groupId: { type: mongoose.SchemaTypes.ObjectId, ref: 'Group' },
   chatType: { type: String, enum: ['private', 'group'], default: 'private' },
   text: String,
   imageUrl: String,

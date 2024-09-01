@@ -1,41 +1,47 @@
 const { Message } = require('../models/message');
 
-async function sendMessage(req, res) {
-    const { chatType, id } = req.params;
-
-    let messages;
-    if (chatType === 'private') {
-        messages = await Message.find({ receiver: id }).populate('senderId');
-    } else if (chatType === 'group') {
-        messages = await Message.find({ groupId: id }).populate('senderId');
-    }
-
-    res.json(messages);
-};
-
+async function sendMessage (req, res) {
+    try {
+        const message = new Message(req.body);
+        await message.save();
+        res.status(201).json(message);
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+}
 
 async function getMessages(req, res) {
-    const { receiverId, chatType, groupId } = req.body;
-    const newMessage = new Message({
-        sender: req.body.sender,
-        text: req.body.text,
-        imageUrl: req.body.imageUrl || null,
-        receiver: chatType === 'private' ? receiverId : null,
-        groupId: chatType === 'group' ? groupId : null,
-    });
+    try {
+        const messages = await Message.find({ receiverId: req.params.userId });
+        res.status(200).json(messages);
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+}
 
-    await newMessage.save();
-    res.status(201).json(newMessage);
-};
+async function createGroup(req, res) {
+    try {
+        const group = new Group(req.body);
+        await group.save();
+        res.status(201).json(group);
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+}
 
-async function getGroupMessages (req, res) {
-    const { groupId } = req.params;
-    const messages = await Message.find({ groupId }).sort({ timestamp: 1 });
-    res.json(messages);
-  }
+async function getGroup(params) {
+    try {
+        const group = await Group.findById(req.params.groupId).populate('members');
+        res.status(200).json(group);
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+}
+
 
 module.exports = {
-    sendMessage,
     getMessages,
-    getGroupMessages,
+    sendMessage,
+    getGroup,
+    createGroup
 }

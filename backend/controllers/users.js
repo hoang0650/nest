@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken')
 const dotenv = require('dotenv');
 const bcrypt = require('bcrypt');
 dotenv.config()
+
 async function getUserInfo(req, res) {
     const token = req.headers.authorization.split(' ')[1];
     await jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
@@ -18,7 +19,6 @@ async function getUserInfo(req, res) {
 
 
 async function createUser(req, res) {
-    // const userData = req.body;
     const { username, email, password } = req.body;
     const hashedPassword = await bcrypt.hash(password, 8);
     function generateUniqueUserId() {
@@ -51,6 +51,7 @@ function login(req, res) {
                     expiresIn: '30d'
                 })
                 const ipAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+                user.online = true
                 user.loginHistory.push({ loginDate: new Date(), ipAddress });
                 user.save()
                     .then(() => res.send({ message: 'Login successful', token }))
