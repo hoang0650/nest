@@ -14,6 +14,7 @@ var businessRouter = require('./routes/business')
 var staffsRouter = require('./routes/staffs')
 var emailsRouter = require('./routes/emails')
 var chatsRouter = require('./routes/chat')
+var chatboxRouter = require('./routes/chatbox');
 const swaggerConfig = require('./swagger/swagger');
 const jwt =require('jsonwebtoken')
 const cors = require('cors');
@@ -102,6 +103,7 @@ app.use('/businesses',businessRouter);
 app.use('/staffs',staffsRouter);
 app.use('/emails',emailsRouter);
 app.use('/chats',chatsRouter);
+app.use('/chatboxes',chatboxRouter);
 // Swagger setup
 app.use('/api-docs', swaggerConfig.swaggerUi.serve, swaggerConfig.swaggerUi.setup(swaggerConfig.swaggerDocs));
 
