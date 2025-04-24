@@ -1,6 +1,15 @@
 var express = require('express');
 var router = express.Router();
-const { getUserInfo, createUser, login } = require('../controllers/users');
+const { 
+    getUserInfo, 
+    createUser, 
+    login, 
+    createBusinessUser, 
+    getUsersByRole, 
+    updateUser, 
+    toggleUserBlock,
+    changePassword
+} = require('../controllers/users');
 
 /* GET users listing. */
 router.get('/', function (req, res, next) {
@@ -139,5 +148,199 @@ router.post('/login', login);
  */
 
 router.get('/info', getUserInfo);
+
+/**
+ * @swagger
+ * /users/business/signup:
+ *   post:
+ *     summary: Register a new business user with business information
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 description: Username for the new business user
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: Email address for the new business user
+ *               password:
+ *                 type: string
+ *                 description: Password for the new business user
+ *               businessInfo:
+ *                 type: object
+ *                 properties:
+ *                   name:
+ *                     type: string
+ *                     description: Business name
+ *                   address:
+ *                     type: string
+ *                     description: Business address
+ *                   tax_code:
+ *                     type: number
+ *                     description: Business tax code
+ *                   contact:
+ *                     type: object
+ *                     properties:
+ *                       phone:
+ *                         type: string
+ *                         description: Business contact phone number
+ *                       email:
+ *                         type: string
+ *                         format: email
+ *                         description: Business contact email
+ *             required:
+ *               - username
+ *               - email
+ *               - password
+ *               - businessInfo
+ *     responses:
+ *       201:
+ *         description: Business user successfully registered
+ *       400:
+ *         description: Email already in use or invalid request
+ *       500:
+ *         description: Internal server error
+ */
+router.post('/business/signup', createBusinessUser);
+
+/**
+ * @swagger
+ * /users/role/{role}:
+ *   get:
+ *     summary: Get users by role
+ *     parameters:
+ *       - in: path
+ *         name: role
+ *         required: true
+ *         schema:
+ *           type: string
+ *           enum: [admin, business, hotel, staff, customer]
+ *         description: The role to filter users by
+ *     responses:
+ *       200:
+ *         description: List of users with the specified role
+ *       400:
+ *         description: Invalid role provided
+ *       500:
+ *         description: Internal server error
+ */
+router.get('/role/:role', getUsersByRole);
+
+/**
+ * @swagger
+ * /users/{userId}:
+ *   put:
+ *     summary: Update user information
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The user ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *                 format: email
+ *               avatar:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: User updated successfully
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Internal server error
+ */
+router.put('/:userId', updateUser);
+
+/**
+ * @swagger
+ * /users/{userId}/block:
+ *   put:
+ *     summary: Block or unblock a user
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The user ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               blocked:
+ *                 type: boolean
+ *                 description: True to block, false to unblock
+ *             required:
+ *               - blocked
+ *     responses:
+ *       200:
+ *         description: User block status updated successfully
+ *       400:
+ *         description: Invalid request
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Internal server error
+ */
+router.put('/:userId/block', toggleUserBlock);
+
+/**
+ * @swagger
+ * /users/{userId}/change-password:
+ *   put:
+ *     summary: Change user password
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The user ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               currentPassword:
+ *                 type: string
+ *                 description: User's current password
+ *               newPassword:
+ *                 type: string
+ *                 description: User's new password
+ *             required:
+ *               - currentPassword
+ *               - newPassword
+ *     responses:
+ *       200:
+ *         description: Password changed successfully
+ *       400:
+ *         description: Current password incorrect or new password invalid
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Internal server error
+ */
+router.put('/:userId/change-password', changePassword);
 
 module.exports = router;

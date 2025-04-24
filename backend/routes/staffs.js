@@ -1,16 +1,30 @@
 var express = require('express');
 var router = express.Router();
-const { getStaff,getStaffById, createStaff, updateStaff, deleteStaff } = require('../controllers/staffs')
+const { 
+    getAllStaff, 
+    getStaff, 
+    getStaffById, 
+    createStaff, 
+    updateStaff, 
+    deleteStaff 
+} = require('../controllers/staffs');
 
-// Get all hotels
-router.get('/', getStaff);
-// Create a new hotel
-router.get('/', getStaffById);
-// Get a specific hotel by ID
+// Lấy tất cả nhân viên
+router.get('/', getAllStaff);
+
+// Lấy nhân viên theo khách sạn
+router.get('/hotel/:hotelId', getStaff);
+
+// Lấy nhân viên theo ID
+router.get('/:id', getStaffById);
+
+// Tạo nhân viên mới
 router.post('/', createStaff);
-// Update a hotel
+
+// Cập nhật nhân viên
 router.put('/:id', updateStaff);
-// Delete a hotel
+
+// Xóa nhân viên
 router.delete('/:id', deleteStaff);
 
 module.exports = router;

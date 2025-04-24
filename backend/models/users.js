@@ -26,7 +26,7 @@ const UserSchema = new Schema({
     },
     role: { 
         type: String, 
-        enum: ['business', 'hotel', 'staff', 'customer'],
+        enum: ['admin', 'business', 'hotel', 'staff', 'customer'],
         default: 'customer',
         required: true, 
     },
@@ -36,6 +36,20 @@ const UserSchema = new Schema({
     offers: [{ type: mongoose.SchemaTypes.ObjectId, ref: 'Offer' }],
     hotelId: { type: mongoose.SchemaTypes.ObjectId, ref: 'Hotel' },
     businessId: { type: mongoose.SchemaTypes.ObjectId, ref: 'Business' },
+    permissions: {
+        type: [{
+            type: String,
+            enum: ['view', 'create', 'edit', 'delete', 'manage_revenue']
+        }],
+        default: function() {
+            if (this.role === 'admin') {
+                return ['view', 'create', 'edit', 'delete', 'manage_revenue'];
+            } else if (this.role === 'business') {
+                return ['view', 'create', 'edit', 'delete', 'manage_revenue'];
+            }
+            return ['view'];
+        }
+    },
     createdAt: { type: Date, default: Date.now },
     loginHistory: [
         {
