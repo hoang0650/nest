@@ -387,7 +387,7 @@ async function checkoutRoom(req, res) {
 function cleanRoom(req, res) {
   try {
     const id = req.params.id;
-    const { staffId } = req.body;
+    const { staffId, type } = req.body;
     
     if (!id) {
       return res.status(404).json({ error: 'Không tìm thấy phòng' });
@@ -399,23 +399,55 @@ function cleanRoom(req, res) {
           return res.status(404).json({ error: 'Không tìm thấy phòng' });
         }
         
-        if (room.roomStatus !== 'dirty') {
-          return res.status(400).json({ error: 'Phòng không ở trạng thái cần dọn dẹp' });
+        // Kiểm tra trạng thái phòng
+        if (room.roomStatus !== 'dirty' && room.roomStatus !== 'maintenance') {
+          return res.status(400).json({ 
+            error: 'Phòng không ở trạng thái cần dọn dẹp hoặc bảo trì' 
+          });
         }
         
         room.roomStatus = 'available';
         
         // Ghi lại lịch sử
+        const eventType = 'maintenance'; // Sử dụng 'maintenance' cho cả hai trường hợp
+        const eventNote = room.roomStatus === 'maintenance' ? 'Đã hoàn thành bảo trì' : 'Đã dọn dẹp phòng';
+        
+        if (!room.bookingHistory) {
+          room.bookingHistory = [];
+        }
+        
         room.bookingHistory.push({
-          event: 'cleaning',
+          event: eventType,
           date: new Date(),
-          staffId
+          staffId,
+          notes: req.body.notes || eventNote
         });
+        
+        // Thêm event mới vào mảng events nếu có
+        if (req.body.events && Array.isArray(req.body.events)) {
+          // Đảm bảo rằng tất cả event type đều hợp lệ
+          const validTypes = ['checkin', 'checkout', 'notpay', 'maintenance', 'service_order'];
+          
+          // Lọc chỉ nhận các event có type hợp lệ
+          const validEvents = req.body.events.filter(event => 
+            validTypes.includes(event.type));
+          
+          if (validEvents.length > 0) {
+            if (!room.events) {
+              room.events = [];
+            }
+            room.events = [...room.events, ...validEvents];
+          }
+        }
         
         room.save()
           .then(updatedRoom => {
+            const successMessage = room.roomStatus === 'maintenance' 
+              ? 'Phòng đã được hoàn thành bảo trì và sẵn sàng sử dụng'
+              : 'Phòng đã được dọn dẹp và sẵn sàng sử dụng';
+              
             res.status(200).json({
-              message: 'Phòng đã được dọn dẹp và sẵn sàng sử dụng',
+              message: successMessage,
               room: updatedRoom
             });
           });
