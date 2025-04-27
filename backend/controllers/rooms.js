@@ -680,7 +680,7 @@ async function getHotelFloors(req, res) {
 // Lấy lịch sử phòng
 const getRoomHistory = async (req, res) => {
   try {
-    const { hotelId, roomId, page = 1, limit = 20 } = req.query;
+    const { hotelId, roomId, page = 1, limit = 20, filterType = 'all' } = req.query;
     const skip = (parseInt(page) - 1) * parseInt(limit);
     
     const query = {};
@@ -721,9 +721,29 @@ const getRoomHistory = async (req, res) => {
       }
     });
     
-    // Sắp xếp theo thời gian gần nhất (checkOutTime)
+    // Lọc dữ liệu theo filterType
+    if (filterType === 'checkout' || filterType === 'check-out') {
+      allHistory = allHistory.filter(history => 
+        history.event === 'check-out' || 
+        (history.checkOutTime && history.checkInTime)
+      );
+    } else if (filterType === 'checkin' || filterType === 'check-in') {
+      allHistory = allHistory.filter(history => 
+        history.event === 'check-in' || 
+        (history.checkInTime && !history.checkOutTime)
+      );
+    } else if (filterType === 'maintenance') {
+      allHistory = allHistory.filter(history => 
+        history.event === 'maintenance'
+      );
+    }
+    
+    // Sắp xếp theo thời gian gần nhất
     allHistory.sort((a, b) => {
-      return new Date(b.checkOutTime || b.checkInTime) - new Date(a.checkOutTime || a.checkInTime);
+      // Ưu tiên sắp xếp theo thời gian checkout nếu có
+      const timeA = a.checkOutTime || a.date || a.checkInTime;
+      const timeB = b.checkOutTime || b.date || b.checkInTime;
+      return new Date(timeB) - new Date(timeA);
     });
     
     // Phân trang
@@ -735,7 +755,8 @@ const getRoomHistory = async (req, res) => {
       history: paginatedHistory,
       totalPages: totalPages,
       currentPage: parseInt(page),
-      totalPayment: totalPayment
+      totalPayment: totalPayment,
+      totalItems: totalItems
     });
   } catch (error) {
     console.error('Error in getRoomHistory:', error);
