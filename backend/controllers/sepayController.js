@@ -71,18 +71,60 @@ exports.getSepayTransactions = async (req, res) => {
       pageSize = 10
     } = req.query;
 
-    // Gọi trực tiếp SePay API với token
     const headers = {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
     };
-    // Có thể truyền params nếu SePay hỗ trợ filter/pagination
-    const response = await axios.get(SEPAY_API_URL, { headers });
-    if (response.data && response.data.transactions) {
-      res.json({ data: response.data.transactions, total: response.data.transactions.length });
-    } else {
-      res.json({ data: [], total: 0 });
+    // Chuẩn bị params gửi lên SePay nếu API hỗ trợ
+    const params = {};
+    if (date_from) params.date_from = date_from;
+    if (date_to) params.date_to = date_to;
+    if (status) params.status = status;
+    if (bankName) params.bankName = bankName;
+    if (search) params.search = search;
+    if (page) params.page = page;
+    if (pageSize) params.pageSize = pageSize;
+
+    // Gọi SePay API, ưu tiên truyền params nếu API hỗ trợ
+    let response;
+    try {
+      response = await axios.get(SEPAY_API_URL, { headers, params });
+    } catch (err) {
+      // Nếu API không hỗ trợ params, fallback gọi không params
+      response = await axios.get(SEPAY_API_URL, { headers });
     }
+    let transactions = response.data && response.data.transactions ? response.data.transactions : [];
+
+    // Nếu API không hỗ trợ filter, filter thủ công ở backend
+    if (date_from) {
+      transactions = transactions.filter(t => new Date(t.transaction_date) >= new Date(date_from));
+    }
+    if (date_to) {
+      transactions = transactions.filter(t => new Date(t.transaction_date) <= new Date(date_to + 'T23:59:59'));
+    }
+    if (status) {
+      transactions = transactions.filter(t => (t.status || '').toLowerCase() === status.toLowerCase());
+    }
+    if (bankName) {
+      transactions = transactions.filter(t => (t.bank_brand_name || '').toLowerCase().includes(bankName.toLowerCase()));
+    }
+    if (search) {
+      const s = search.trim().toLowerCase();
+      transactions = transactions.filter(t =>
+        (t.transaction_content || '').toLowerCase().includes(s) ||
+        (t.reference_number || '').toLowerCase().includes(s) ||
+        (t.account_number || '').toLowerCase().includes(s)
+      );
+    }
+    // Phân trang thủ công nếu API không hỗ trợ
+    const total = transactions.length;
+    const pageInt = parseInt(page) || 1;
+    const pageSizeInt = parseInt(pageSize) || 10;
+    const start = (pageInt - 1) * pageSizeInt;
+    const end = start + pageSizeInt;
+    const pagedData = transactions.slice(start, end);
+
+    res.json({ data: pagedData, total });
   } catch (error) {
     res.status(error?.response?.status || 500).json({
       error: 'Lỗi khi lấy giao dịch SePay',
