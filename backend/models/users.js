@@ -30,6 +30,13 @@ const UserSchema = new Schema({
         default: 'customer',
         required: true, 
     },
+    pricingPackage: {
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: 'PricingPackage'
+    },
+    packageExpiryDate: {
+        type: Date
+    },
     avatar: { type: String},
     loyaltyPoints: { type: Number, default: 0 },
     bookings: [{ type: mongoose.SchemaTypes.ObjectId, ref: 'Booking' }],

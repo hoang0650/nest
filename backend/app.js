@@ -20,6 +20,7 @@ const swaggerConfig = require('./swagger/swagger');
 const jwt =require('jsonwebtoken')
 const cors = require('cors');
 const dotenv = require('dotenv');
+const pricingRoutes = require('./routes/pricing');
 dotenv.config();
 
 //set up mongoose
@@ -106,6 +107,7 @@ app.use('/emails',emailsRouter);
 app.use('/chats',chatsRouter);
 app.use('/chatboxes',chatboxRouter);
 app.use('/sepay', sepayRouter);
+app.use('/pricing-packages', pricingRoutes);
 // Swagger setup
 app.use('/api-docs', swaggerConfig.swaggerUi.serve, swaggerConfig.swaggerUi.setup(swaggerConfig.swaggerDocs));
 
